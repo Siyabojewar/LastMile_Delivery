@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  customer
+  agent
+}
+
+enum OrderType {
+  B2B
+  B2C
+}
+
+enum ZoneRelation {
+  intra
+  inter
+}
+
+enum PaymentType {
+  Prepaid
+  COD
+}
+
+enum OrderStatus {
+  Created
+  PickedUp
+  InTransit
+  OutForDelivery
+  Delivered
+  Failed
+  Rescheduled
+}
+
+enum SurchargeType {
+  flat
+  percent
+}
+
+enum NotificationChannel {
+  email
+  sms
+}
+
+enum NotificationStatus {
+  sent
+  failed
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role
+  phone        String?
+  createdAt    DateTime @default(now())
+
+  // Relations
+  agent              Agent?
+  ordersAsCustomer   Order[]             @relation("CustomerOrders")
+  ordersCreatedBy    Order[]             @relation("CreatedByOrders")
+  ordersAssigned     Order[]             @relation("AssignedAgentOrders")
+  statusHistoryActor OrderStatusHistory[]
+  rescheduleRequests RescheduleRequest[] @relation("RescheduleRequestedBy")
+  rescheduleAssigned RescheduleRequest[] @relation("RescheduleAssignedAgent")
+}
+
+model Zone {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  pincodes       PincodeZoneMap[]
+  agents         Agent[]
+  pickupOrders   Order[]          @relation("PickupZoneOrders")
+  dropOrders     Order[]          @relation("DropZoneOrders")
+}
+
+model PincodeZoneMap {
+  pincode  String @id
+  zoneId   String
+  zone     Zone   @relation(fields: [zoneId], references: [id])
+}
+
+model RateCard {
+  id           String       @id @default(cuid())
+  orderType    OrderType
+  zoneRelation ZoneRelation
+  baseRate     Decimal      @db.Decimal(10, 2)
+  ratePerKg    Decimal      @db.Decimal(10, 2)
+  effectiveFrom DateTime    @default(now())
+  isActive     Boolean      @default(true)
+
+  orders Order[]
+}
+
+model CodSurchargeRule {
+  id            String        @id @default(cuid())
+  orderType     OrderType
+  surchargeType SurchargeType
+  value         Decimal       @db.Decimal(10, 2)
+  isActive      Boolean       @default(true)
+}
+
+model Agent {
+  userId             String   @id
+  user               User     @relation(fields: [userId], references: [id])
+  currentZoneId      String?
+  currentZone        Zone?    @relation(fields: [currentZoneId], references: [id])
+  isAvailable        Boolean  @default(true)
+  currentLat         Decimal? @db.Decimal(10, 7)
+  currentLng         Decimal? @db.Decimal(10, 7)
+  lastLocationUpdate DateTime?
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  customerId     String
+  customer       User        @relation("CustomerOrders", fields: [customerId], references: [id])
+  createdById    String
+  createdBy      User        @relation("CreatedByOrders", fields: [createdById], references: [id])
+
+  pickupAddress  String
+  pickupPincode  String
+  pickupZoneId   String?
+  pickupZone     Zone?       @relation("PickupZoneOrders", fields: [pickupZoneId], references: [id])
+
+  dropAddress    String
+  dropPincode    String
+  dropZoneId     String?
+  dropZone       Zone?       @relation("DropZoneOrders", fields: [dropZoneId], references: [id])
+
+  lengthCm       Decimal     @db.Decimal(8, 2)
+  breadthCm      Decimal     @db.Decimal(8, 2)
+  heightCm       Decimal     @db.Decimal(8, 2)
+  actualWeightKg Decimal     @db.Decimal(8, 3)
+  volumetricWeightKg Decimal @db.Decimal(8, 3)
+  chargeableWeightKg Decimal @db.Decimal(8, 3)
+
+  orderType      OrderType
+  paymentType    PaymentType
+
+  rateCardId         String?
+  rateCard           RateCard?   @relation(fields: [rateCardId], references: [id])
+  baseCharge         Decimal     @db.Decimal(10, 2)
+  codSurchargeAmount Decimal     @default(0) @db.Decimal(10, 2)
+  totalCharge        Decimal     @db.Decimal(10, 2)
+
+  status          OrderStatus @default(Created)
+  assignedAgentId String?
+  assignedAgent   User?       @relation("AssignedAgentOrders", fields: [assignedAgentId], references: [id])
+
+  scheduledDate DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  statusHistory      OrderStatusHistory[]
+  rescheduleRequests RescheduleRequest[]
+  notifications      NotificationLog[]
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(cuid())
+  orderId   String
+  order     Order       @relation(fields: [orderId], references: [id])
+  status    OrderStatus
+  actorId   String
+  actor     User        @relation(fields: [actorId], references: [id])
+  actorRole Role
+  note      String?
+  createdAt DateTime    @default(now())
+
+  @@index([orderId])
+}
+
+model RescheduleRequest {
+  id                String   @id @default(cuid())
+  orderId           String
+  order             Order    @relation(fields: [orderId], references: [id])
+  oldScheduledDate  DateTime?
+  newScheduledDate  DateTime
+  requestedById     String
+  requestedBy       User     @relation("RescheduleRequestedBy", fields: [requestedById], references: [id])
+  reassignedAgentId String?
+  reassignedAgent   User?    @relation("RescheduleAssignedAgent", fields: [reassignedAgentId], references: [id])
+  createdAt         DateTime @default(now())
+}
+
+model NotificationLog {
+  id        String              @id @default(cuid())
+  orderId   String
+  order     Order               @relation(fields: [orderId], references: [id])
+  channel   NotificationChannel
+  recipient String
+  subject   String
+  status    NotificationStatus
+  sentAt    DateTime            @default(now())
+}

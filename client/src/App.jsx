@@ -1,0 +1,119 @@
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import Navbar from './components/shared/Navbar';
+import LoadingSpinner from './components/shared/LoadingSpinner';
+
+// Auth pages
+import Login from './pages/Login';
+import Register from './pages/Register';
+
+// Customer pages
+import CustomerOrders from './pages/customer/CustomerOrders';
+import NewOrder from './pages/customer/NewOrder';
+import TrackOrder from './pages/customer/TrackOrder';
+
+// Agent pages
+import AgentOrders from './pages/agent/AgentOrders';
+import AgentOrderDetail from './pages/agent/AgentOrderDetail';
+
+// Admin pages
+import AdminOrders from './pages/admin/AdminOrders';
+import AdminOrderDetail from './pages/admin/AdminOrderDetail';
+import AdminZones from './pages/admin/AdminZones';
+import AdminRateCards from './pages/admin/AdminRateCards';
+import AdminAgents from './pages/admin/AdminAgents';
+
+function ProtectedRoute({ children, roles }) {
+  const { user, loading } = useAuth();
+  if (loading) return <LoadingSpinner />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (roles && !roles.includes(user.role)) return <Navigate to="/" replace />;
+  return children;
+}
+
+function RoleHome() {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role === 'admin')    return <Navigate to="/admin/orders" replace />;
+  if (user.role === 'agent')    return <Navigate to="/agent/orders" replace />;
+  if (user.role === 'customer') return <Navigate to="/customer/orders" replace />;
+  return <Navigate to="/login" replace />;
+}
+
+export default function App() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        <Routes>
+          {/* Public */}
+          <Route path="/login"    element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* Root redirect */}
+          <Route path="/" element={<RoleHome />} />
+
+          {/* Customer */}
+          <Route path="/customer/orders" element={
+            <ProtectedRoute roles={['customer']}>
+              <CustomerOrders />
+            </ProtectedRoute>
+          } />
+          <Route path="/customer/new-order" element={
+            <ProtectedRoute roles={['customer']}>
+              <NewOrder />
+            </ProtectedRoute>
+          } />
+          <Route path="/customer/orders/:id" element={
+            <ProtectedRoute roles={['customer']}>
+              <TrackOrder />
+            </ProtectedRoute>
+          } />
+
+          {/* Agent */}
+          <Route path="/agent/orders" element={
+            <ProtectedRoute roles={['agent']}>
+              <AgentOrders />
+            </ProtectedRoute>
+          } />
+          <Route path="/agent/orders/:id" element={
+            <ProtectedRoute roles={['agent']}>
+              <AgentOrderDetail />
+            </ProtectedRoute>
+          } />
+
+          {/* Admin */}
+          <Route path="/admin/orders" element={
+            <ProtectedRoute roles={['admin']}>
+              <AdminOrders />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/orders/:id" element={
+            <ProtectedRoute roles={['admin']}>
+              <AdminOrderDetail />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/zones" element={
+            <ProtectedRoute roles={['admin']}>
+              <AdminZones />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/rate-cards" element={
+            <ProtectedRoute roles={['admin']}>
+              <AdminRateCards />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/agents" element={
+            <ProtectedRoute roles={['admin']}>
+              <AdminAgents />
+            </ProtectedRoute>
+          } />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
