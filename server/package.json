@@ -1,5 +1,5 @@
 {
-  "name": "lastmile-server",
+  "name": "last-mile-delivery-server",
   "version": "1.0.0",
   "description": "Last-Mile Delivery Tracker — Express API",
   "main": "src/index.js",
