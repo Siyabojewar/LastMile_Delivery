@@ -2,6 +2,8 @@
 
 A full-stack delivery management system with role-based access for **customers**, **delivery agents**, and **admins**. Built with React (Vite) + Tailwind CSS, Node.js + Express, PostgreSQL + Prisma, and JWT authentication.
 
+**Frontend highlights:** guided multi-step order creation with live volumetric preview, prominent quote card before confirmation, visual progress stepper for tracking, append-only audit timeline, mobile-responsive navbar with active-link highlighting, role-specific UI flows, and consistent empty states across all pages — all using Tailwind utility classes only, no additional UI libraries.
+
 ---
 
 ## Quick Start
@@ -118,41 +120,76 @@ Open http://localhost:5173 and sign in with `admin@example.com` / `admin123`.
 
 ```
 LastMile_Delivery/
-├── SPEC.md                      # Full technical specification
-├── SYSTEM_DESIGN.md             # System design write-up (≤800 words)
+├── SPEC.md                          # Full technical specification
+├── SYSTEM_DESIGN.md                 # System design write-up (≤800 words)
 ├── README.md
+│
 ├── server/
 │   ├── prisma/
-│   │   └── schema.prisma        # All DB models
+│   │   └── schema.prisma            # All DB models (10 tables)
 │   ├── src/
-│   │   ├── index.js             # Entry point
-│   │   ├── app.js               # Express app setup
+│   │   ├── index.js                 # Entry point
+│   │   ├── app.js                   # Express app + CORS + global error handler
 │   │   ├── middleware/
-│   │   │   └── auth.js          # JWT verify + RBAC authorize()
+│   │   │   └── auth.js              # JWT verify + RBAC authorize()
 │   │   ├── routes/
-│   │   │   ├── auth.js          # POST /auth/register, /auth/login
-│   │   │   ├── admin.js         # Admin CRUD: zones, pincodes, rate cards, COD, agents
-│   │   │   └── orders.js        # All order flows: quote, create, assign, status, reschedule
+│   │   │   ├── auth.js              # POST /auth/register, /auth/login
+│   │   │   ├── admin.js             # Admin CRUD: zones, pincodes, rate cards, COD, agents
+│   │   │   └── orders.js            # Quote, create, assign, status, history, reschedule
 │   │   ├── services/
-│   │   │   ├── rateEngine.js    # Rate calculation (DB-driven, no hardcoded values)
-│   │   │   ├── assignment.js    # Auto & manual agent assignment
-│   │   │   └── notifications.js # Nodemailer email + SMS stub + notifications_log
+│   │   │   ├── rateEngine.js        # DB-driven rate calculation (no hardcoded values)
+│   │   │   ├── assignment.js        # Haversine auto-assign + manual assign
+│   │   │   └── notifications.js     # Nodemailer email + SMS stub + notifications_log write
 │   │   └── utils/
-│   │       ├── prisma.js        # Singleton PrismaClient
-│   │       └── rateFormulas.js  # Pure math functions (also used by unit tests)
+│   │       ├── prisma.js            # Singleton PrismaClient
+│   │       └── rateFormulas.js      # Pure math functions (imported by unit tests)
 │   ├── tests/
-│   │   └── rateEngine.test.js   # 14 unit tests for rate formula logic
+│   │   └── rateEngine.test.js       # 14 unit tests for the rate formula
 │   └── .env.example
+│
 └── client/
+    ├── index.html                   # App shell — title: "Last-Mile Delivery Tracker"
+    ├── vite.config.js               # Vite + /api proxy to :4000
+    ├── tailwind.config.js
     └── src/
-        ├── pages/
-        │   ├── Login.jsx / Register.jsx
-        │   ├── customer/        # CustomerOrders, NewOrder, TrackOrder
-        │   ├── agent/           # AgentOrders, AgentOrderDetail
-        │   └── admin/           # AdminOrders, AdminOrderDetail, AdminZones, AdminRateCards, AdminAgents
-        ├── components/shared/   # Navbar, StatusBadge, Alert, LoadingSpinner
-        ├── context/AuthContext.jsx
-        └── utils/api.js         # Centralized fetch wrapper
+        ├── main.jsx                 # React root + BrowserRouter + AuthProvider
+        ├── App.jsx                  # Route tree + ProtectedRoute + RoleHome
+        ├── index.css                # Tailwind layers + shared component classes
+        │
+        ├── context/
+        │   └── AuthContext.jsx      # JWT storage, login/logout, user state
+        │
+        ├── utils/
+        │   ├── api.js               # Centralized fetch wrapper (auto-attaches Bearer token)
+        │   └── statusColors.js      # STATUS_COLORS, STATUS_DOT_COLORS, STATUS_LABELS, STATUS_ORDER
+        │
+        ├── components/shared/
+        │   ├── Navbar.jsx           # Sticky nav — active links, role pill, mobile hamburger menu
+        │   ├── PageHeader.jsx       # Consistent page heading + description + optional CTA
+        │   ├── FormSection.jsx      # Numbered/labelled form group container
+        │   ├── QuoteCard.jsx        # Prominent quote breakdown + Confirm Order CTA
+        │   ├── StatusBadge.jsx      # Coloured badge with dot indicator
+        │   ├── Alert.jsx            # Error / success / info / warning inline alerts
+        │   ├── LoadingSpinner.jsx   # Full spinner + InlineSpinner + Skeleton + TableSkeleton
+        │   ├── EmptyState.jsx       # Empty list/table placeholder with icon + action
+        │   └── InfoGrid.jsx         # Key-value grid for order detail panels
+        │
+        └── pages/
+            ├── Login.jsx            # Centred card, branded header, inline spinner
+            ├── Register.jsx         # Same layout as Login, phone optional
+            ├── customer/
+            │   ├── CustomerOrders.jsx   # Order cards with status icon, type/payment tags
+            │   ├── NewOrder.jsx         # 4-section guided form + live volumetric preview + QuoteCard
+            │   └── TrackOrder.jsx       # Progress stepper + route summary + timeline + reschedule panel
+            ├── agent/
+            │   ├── AgentOrders.jsx      # Grouped active/terminal list, COD highlight
+            │   └── AgentOrderDetail.jsx # Route card, COD alert, action buttons with guidance, timeline
+            └── admin/
+                ├── AdminOrders.jsx      # Striped filterable table, agent avatar, inline auto-assign
+                ├── AdminOrderDetail.jsx # Full order detail, assign panel, override panel, audit trail
+                ├── AdminZones.jsx       # Zone CRUD + pincode map with live search
+                ├── AdminRateCards.jsx   # Rate card + COD rule forms with live example previews
+                └── AdminAgents.jsx      # Stats row, sticky create form, agent cards, search+filter
 ```
 
 ---
@@ -273,3 +310,31 @@ total_charge = base_charge + cod_surcharge
 - **Zone detection**: uses pincode lookup table (`pincode_zone_map`). Admins add serviceable pincodes via the admin UI. Pincodes not in the table return a 422 error on quote/create.
 - **Reschedule auto-assign**: after a customer reschedules, the system tries auto-assignment immediately. If no agent is available, the order stays `Rescheduled` and an admin can manually assign.
 - **order_status_history immutability**: rows are insert-only at the database level via Prisma — there are no update or delete operations on that table anywhere in the codebase.
+
+---
+
+## UI/UX Notes
+
+No additional UI libraries were added — all styling uses **Tailwind CSS utility classes only**.
+
+### Shared components added during UI overhaul
+
+| Component | Purpose |
+|-----------|---------|
+| `PageHeader` | Consistent heading + description + optional back button + action CTA on every page |
+| `FormSection` | Numbered, labelled visual group for related form fields |
+| `QuoteCard` | Full-bleed gradient card showing the rate breakdown with a Confirm button |
+| `EmptyState` | Empty list/table placeholder with icon, title, description, and optional action |
+| `InfoGrid` | Responsive key-value grid used in order detail panels |
+| `StatusBadge` | Coloured pill with a dot indicator per status |
+| `LoadingSpinner` | Full spinner + `InlineSpinner` (for buttons) + `Skeleton` + `TableSkeleton` |
+
+### Key UX decisions
+
+- **New Order form** is split into 4 labelled sections (Pickup, Drop, Dimensions, Payment) with a live volumetric weight preview as the customer types, so they know what chargeable weight will be before requesting a quote.
+- **Quote is always shown before confirmation** — the QuoteCard breaks down base charge, COD surcharge, zones, and chargeable weight prominently before the "Confirm & Place Order" button.
+- **Tracking timeline** shows a visual progress stepper (Created → Picked Up → In Transit → Out for Delivery → Delivered) plus a reversed chronological event list with actor attribution.
+- **Agent order detail** shows a COD alert banner when the order requires cash collection, and contextual guidance text below each status action button.
+- **Admin audit timeline** visually distinguishes admin overrides from agent transitions using a purple ring on the dot.
+- **Tables** use alternating row shading, status badges with dot indicators, and an inline "Auto-assign" action to avoid requiring a navigation round-trip.
+- **Navbar** highlights the active route, shows the logged-in user's name + role pill, and collapses to a hamburger menu on mobile.
