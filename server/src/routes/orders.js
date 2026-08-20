@@ -310,7 +310,17 @@ router.post('/:id/status', authorize('agent', 'admin'), async (req, res, next) =
       const updated = await tx.order.update({
         where: { id: order.id },
         data: { status },
-        include: { customer: true },
+        include: {
+          customer: true,
+          pickupZone: true,
+          dropZone: true,
+          rateCard: true,
+          assignedAgent: { select: { id: true, name: true, email: true, phone: true } },
+          statusHistory: {
+            include: { actor: { select: { id: true, name: true, role: true } } },
+            orderBy: { createdAt: 'asc' },
+          },
+        },
       });
 
       // If delivered/failed, free up the agent
@@ -348,7 +358,12 @@ router.post('/:id/assign', authorize('admin'), async (req, res, next) => {
       const updated = await tx.order.update({
         where: { id: req.params.id },
         data: { assignedAgentId: agentId },
-        include: { customer: true },
+        include: {
+          customer: true,
+          pickupZone: true,
+          dropZone: true,
+          assignedAgent: { select: { id: true, name: true, email: true, phone: true } },
+        },
       });
 
       await tx.orderStatusHistory.create({
@@ -447,7 +462,17 @@ router.post('/:id/reschedule', authorize('customer', 'admin'), async (req, res, 
           // Free up current agent so auto-assign can pick a fresh one
           assignedAgentId: null,
         },
-        include: { customer: true },
+        include: {
+          customer: true,
+          pickupZone: true,
+          dropZone: true,
+          rateCard: true,
+          assignedAgent: { select: { id: true, name: true, email: true, phone: true } },
+          statusHistory: {
+            include: { actor: { select: { id: true, name: true, role: true } } },
+            orderBy: { createdAt: 'asc' },
+          },
+        },
       });
 
       // Append-only history
