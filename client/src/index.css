@@ -1,112 +1,201 @@
+/* Import Inter from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-page-gradient text-gray-900 antialiased font-sans;
+    min-height: 100vh;
   }
   * {
     @apply box-border;
   }
+
+  /* Scrollbar polish */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-gray-400; }
 }
 
 @layer components {
-  /* ── Buttons ───────────────────────────────────────────── */
+  /* ── Buttons ─────────────────────────────────────────────────────────── */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm
-           transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2
-           disabled:opacity-50 disabled:cursor-not-allowed select-none;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm
+           transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed select-none
+           active:scale-[0.97];
   }
   .btn-primary {
-    @apply btn bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 focus:ring-brand-500 shadow-sm;
+    @apply btn bg-brand-600 text-white
+           hover:bg-brand-700 hover:-translate-y-px hover:shadow-card-md
+           active:bg-brand-800 active:translate-y-0
+           focus:ring-brand-500 shadow-card;
   }
   .btn-secondary {
-    @apply btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 active:bg-gray-100 focus:ring-brand-500;
+    @apply btn bg-white text-gray-700 border border-gray-200
+           hover:bg-surface-50 hover:-translate-y-px hover:shadow-card-md hover:border-gray-300
+           active:bg-surface-100 active:translate-y-0
+           focus:ring-brand-500 shadow-card;
   }
   .btn-danger {
-    @apply btn bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-500 shadow-sm;
+    @apply btn bg-red-600 text-white
+           hover:bg-red-700 hover:-translate-y-px hover:shadow-card-md
+           active:bg-red-800 active:translate-y-0
+           focus:ring-red-500 shadow-card;
+  }
+  .btn-success {
+    @apply btn bg-success-600 text-white
+           hover:bg-success-700 hover:-translate-y-px hover:shadow-card-md
+           active:bg-success-700 active:translate-y-0
+           focus:ring-success-500 shadow-card;
   }
   .btn-ghost {
-    @apply btn bg-transparent text-gray-600 hover:bg-gray-100 active:bg-gray-200 focus:ring-brand-500;
+    @apply btn bg-transparent text-gray-600
+           hover:bg-surface-100 hover:text-gray-800
+           active:bg-surface-200
+           focus:ring-brand-500;
   }
-  .btn-sm {
-    @apply px-3 py-1.5 text-xs;
-  }
-  .btn-lg {
-    @apply px-6 py-3 text-base;
-  }
+  .btn-sm   { @apply px-3 py-1.5 text-xs rounded-lg; }
+  .btn-lg   { @apply px-6 py-3 text-base rounded-xl; }
 
-  /* ── Form inputs ───────────────────────────────────────── */
+  /* ── Form inputs ──────────────────────────────────────────────────────── */
   .input {
-    @apply block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900
-           shadow-sm placeholder-gray-400
-           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500
-           disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed
-           transition-colors duration-150;
+    @apply block w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-900
+           shadow-inner-sm placeholder-gray-400
+           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-400
+           hover:border-gray-300
+           disabled:bg-surface-100 disabled:text-gray-400 disabled:cursor-not-allowed
+           transition-all duration-150;
   }
   .input-error {
     @apply border-red-400 focus:ring-red-400 focus:border-red-400;
   }
   .label {
-    @apply block text-sm font-medium text-gray-700 mb-1.5;
+    @apply block text-sm font-semibold text-gray-700 mb-1.5;
   }
   .field-hint {
-    @apply mt-1 text-xs text-gray-400;
+    @apply mt-1.5 text-xs text-gray-400 leading-relaxed;
   }
 
-  /* ── Cards ─────────────────────────────────────────────── */
+  /* ── Cards ────────────────────────────────────────────────────────────── */
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-6;
+    @apply bg-white rounded-2xl shadow-card border border-gray-100/80 p-6
+           transition-shadow duration-200;
   }
   .card-sm {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-4;
+    @apply bg-white rounded-xl shadow-card border border-gray-100/80 p-4
+           transition-shadow duration-200;
   }
   .card-hover {
-    @apply card cursor-pointer hover:shadow-md hover:border-brand-200 transition-all duration-150;
+    @apply card cursor-pointer
+           hover:shadow-card-md hover:-translate-y-0.5 hover:border-brand-200
+           transition-all duration-200 ease-out;
+  }
+  /* Form / action cards — slightly tinted bg to differentiate from content cards */
+  .card-form {
+    @apply bg-gradient-to-br from-brand-50/60 to-white rounded-2xl shadow-card
+           border border-brand-100 p-6;
+  }
+  .card-action {
+    @apply bg-gradient-to-br from-surface-50 to-white rounded-2xl shadow-card
+           border border-surface-200 p-6;
   }
 
-  /* ── Badges ─────────────────────────────────────────────── */
+  /* ── Badges ───────────────────────────────────────────────────────────── */
   .badge {
-    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide;
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold
+           tracking-wide ring-1 ring-inset;
   }
   .badge-dot {
-    @apply w-1.5 h-1.5 rounded-full;
+    @apply w-1.5 h-1.5 rounded-full shrink-0;
   }
 
-  /* ── Table ──────────────────────────────────────────────── */
+  /* ── Table ────────────────────────────────────────────────────────────── */
   .table-container {
-    @apply overflow-x-auto rounded-xl border border-gray-200 bg-white;
+    @apply overflow-x-auto rounded-2xl border border-gray-100 bg-white shadow-card;
   }
   .table {
     @apply min-w-full divide-y divide-gray-100 text-sm;
   }
   .table-head {
-    @apply bg-gray-50;
+    @apply bg-surface-50;
   }
   .table-th {
-    @apply px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap;
+    @apply px-4 py-3.5 text-left text-[11px] font-bold text-gray-400 uppercase tracking-widest
+           whitespace-nowrap;
   }
   .table-td {
-    @apply px-4 py-3.5 text-gray-700 align-middle;
+    @apply px-4 py-4 text-gray-700 align-middle;
   }
   .table-row {
-    @apply hover:bg-gray-50 transition-colors duration-100;
+    @apply hover:bg-brand-50/40 transition-colors duration-100;
   }
   .table-row-even {
-    @apply bg-gray-50/50;
+    @apply bg-surface-50/60;
   }
 
-  /* ── Section divider ────────────────────────────────────── */
+  /* ── Section / typography ─────────────────────────────────────────────── */
+  /* Use for sub-headings inside cards */
   .section-title {
-    @apply text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3;
+    @apply flex items-center gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3;
+  }
+  /* Page-level heading — larger, stronger */
+  .page-title {
+    @apply text-2xl font-extrabold text-gray-900 leading-tight tracking-tight;
+  }
+  .page-subtitle {
+    @apply mt-1 text-sm text-gray-500 leading-relaxed;
   }
 
-  /* ── Form section box ───────────────────────────────────── */
+  /* ── Form section box ─────────────────────────────────────────────────── */
   .form-section {
-    @apply rounded-xl border border-gray-200 bg-gray-50/50 p-5 space-y-4;
+    @apply rounded-2xl border border-gray-100 bg-white shadow-card p-5 space-y-4;
   }
   .form-section-title {
-    @apply flex items-center gap-2 text-sm font-semibold text-gray-700 mb-4 pb-3 border-b border-gray-200;
+    @apply flex items-center gap-2.5 text-sm font-bold text-gray-700 mb-4 pb-3
+           border-b border-gray-100;
+  }
+
+  /* ── Status badge ring colors (for badge ring-inset) ──────────────────── */
+  .badge-gray   { @apply ring-gray-200; }
+  .badge-blue   { @apply ring-blue-200; }
+  .badge-yellow { @apply ring-yellow-200; }
+  .badge-orange { @apply ring-orange-200; }
+  .badge-green  { @apply ring-emerald-200; }
+  .badge-red    { @apply ring-red-200; }
+  .badge-purple { @apply ring-purple-200; }
+
+  /* ── Dividers ─────────────────────────────────────────────────────────── */
+  .divider {
+    @apply border-t border-gray-100 my-4;
+  }
+  .divider-label {
+    @apply flex items-center gap-3 text-xs text-gray-400 font-medium;
+  }
+  .divider-label::before,
+  .divider-label::after {
+    content: '';
+    @apply flex-1 border-t border-gray-200;
+  }
+
+  /* ── Search input (visually distinct from data-entry inputs) ──────────── */
+  .search-input {
+    @apply input pl-9 bg-surface-50 border-surface-200
+           focus:bg-white focus:border-brand-400;
+  }
+
+  /* ── Stat card ────────────────────────────────────────────────────────── */
+  .stat-card {
+    @apply rounded-2xl px-5 py-4 text-center shadow-card border animate-fade-in;
+  }
+  .stat-number {
+    @apply text-3xl font-extrabold leading-none mt-1;
+  }
+  .stat-label {
+    @apply text-xs font-semibold uppercase tracking-widest mt-1.5 opacity-70;
   }
 }
