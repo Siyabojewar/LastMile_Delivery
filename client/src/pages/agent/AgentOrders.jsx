@@ -7,14 +7,13 @@ import EmptyState from '../../components/shared/EmptyState';
 import Alert from '../../components/shared/Alert';
 import { TableSkeleton } from '../../components/shared/LoadingSpinner';
 
-/* Terminal statuses — these orders are done */
 const TERMINAL = new Set(['Delivered', 'Failed']);
 
-/* Group orders: active first, then terminal */
 function groupOrders(orders) {
-  const active   = orders.filter(o => !TERMINAL.has(o.status));
-  const terminal = orders.filter(o =>  TERMINAL.has(o.status));
-  return { active, terminal };
+  return {
+    active:   orders.filter(o => !TERMINAL.has(o.status)),
+    terminal: orders.filter(o =>  TERMINAL.has(o.status)),
+  };
 }
 
 export default function AgentOrders() {
@@ -36,13 +35,13 @@ export default function AgentOrders() {
       <PageHeader
         icon="🚴"
         title="Assigned Orders"
-        description="Orders currently assigned to you. Tap an order to update its status."
+        description="Your active deliveries. Tap any order to update its status."
       />
 
-      <Alert message={error} />
+      <Alert message={error} className="mb-5" />
 
       {loading ? (
-        <TableSkeleton rows={4} cols={1} />
+        <TableSkeleton rows={3} cols={1} />
       ) : orders.length === 0 && !error ? (
         <EmptyState
           icon="📭"
@@ -50,12 +49,12 @@ export default function AgentOrders() {
           description="Your assigned deliveries will appear here once an admin assigns an order to you."
         />
       ) : (
-        <div className="space-y-6">
-          {/* Active orders */}
+        <div className="space-y-8">
           {active.length > 0 && (
             <section>
-              <p className="section-title mb-3">
-                Active ({active.length})
+              <p className="section-title">
+                <span>⚡</span> Active
+                <span className="ml-2 normal-case font-normal text-gray-300">({active.length})</span>
               </p>
               <div className="space-y-3">
                 {active.map(o => <AgentOrderCard key={o.id} order={o} />)}
@@ -63,13 +62,13 @@ export default function AgentOrders() {
             </section>
           )}
 
-          {/* Completed / Failed */}
           {terminal.length > 0 && (
             <section>
-              <p className="section-title mb-3">
-                Completed / Failed ({terminal.length})
+              <p className="section-title">
+                <span>🏁</span> Completed / Failed
+                <span className="ml-2 normal-case font-normal text-gray-300">({terminal.length})</span>
               </p>
-              <div className="space-y-3">
+              <div className="space-y-3 opacity-75">
                 {terminal.map(o => <AgentOrderCard key={o.id} order={o} muted />)}
               </div>
             </section>
@@ -81,30 +80,35 @@ export default function AgentOrders() {
 }
 
 function AgentOrderCard({ order, muted }) {
-  const isCOD      = order.paymentType === 'COD';
-  const isFailed   = order.status === 'Failed';
+  const isCOD       = order.paymentType === 'COD';
   const isDelivered = order.status === 'Delivered';
+  const isFailed    = order.status === 'Failed';
+
+  const iconMeta = isDelivered
+    ? { bg: 'bg-emerald-100 ring-emerald-200', emoji: '✅' }
+    : isFailed
+      ? { bg: 'bg-red-100 ring-red-200', emoji: '❌' }
+      : { bg: 'bg-amber-100 ring-amber-200', emoji: '🚚' };
 
   return (
     <Link
       to={`/agent/orders/${order.id}`}
-      className={`card-hover flex flex-col sm:flex-row sm:items-center gap-4 group
-        ${muted ? 'opacity-70' : ''}`}
+      className={`card-hover flex flex-col sm:flex-row sm:items-center gap-4 group ${muted ? 'opacity-80' : ''}`}
     >
       {/* Icon */}
-      <div className={`shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-xl select-none
-        ${isDelivered ? 'bg-emerald-100' : isFailed ? 'bg-red-100' : 'bg-amber-100'}`}>
-        {isDelivered ? '✅' : isFailed ? '❌' : '🚚'}
+      <div className={`shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center
+                       text-xl select-none ring-1 shadow-card ${iconMeta.bg}`}>
+        {iconMeta.emoji}
       </div>
 
-      {/* Main content */}
+      {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 flex-wrap">
           <div className="min-w-0">
-            <p className="font-mono text-[10px] text-gray-400 uppercase tracking-wider">
+            <p className="font-mono text-[10px] text-gray-400 uppercase tracking-widest">
               #{order.id.slice(-8)}
             </p>
-            <p className="font-semibold text-gray-900 truncate mt-0.5">
+            <p className="font-bold text-gray-900 truncate mt-0.5 text-[15px]">
               {order.customer?.name}
             </p>
           </div>
@@ -112,43 +116,42 @@ function AgentOrderCard({ order, muted }) {
         </div>
 
         {/* Addresses */}
-        <div className="mt-2 space-y-1 text-sm">
+        <div className="mt-2.5 space-y-1 text-sm">
           <div className="flex items-center gap-2 text-gray-500">
-            <span className="text-xs">📍</span>
-            <span className="truncate">
-              {order.pickupAddress}
-              <span className="text-gray-400 ml-1">({order.pickupPincode})</span>
+            <div className="w-5 h-5 rounded-lg bg-blue-50 flex items-center justify-center text-xs shrink-0">📍</div>
+            <span className="truncate">{order.pickupAddress}
+              <span className="text-gray-400 ml-1 font-mono text-xs">({order.pickupPincode})</span>
             </span>
           </div>
-          <div className="flex items-center gap-2 text-gray-700 font-medium">
-            <span className="text-xs">🏁</span>
-            <span className="truncate">
-              {order.dropAddress}
-              <span className="text-gray-400 font-normal ml-1">({order.dropPincode})</span>
+          <div className="flex items-center gap-2 text-gray-700 font-semibold">
+            <div className="w-5 h-5 rounded-lg bg-emerald-50 flex items-center justify-center text-xs shrink-0">🏁</div>
+            <span className="truncate">{order.dropAddress}
+              <span className="text-gray-400 font-normal ml-1 font-mono text-xs">({order.dropPincode})</span>
             </span>
           </div>
         </div>
 
-        {/* Tags row */}
+        {/* Tags */}
         <div className="flex flex-wrap items-center gap-2 mt-2.5">
-          <span className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5 font-medium">
+          <span className="text-xs bg-surface-100 text-gray-600 rounded-full px-2.5 py-0.5
+                           font-semibold ring-1 ring-surface-200">
             {order.orderType}
           </span>
-          {isCOD && (
-            <span className="text-xs bg-orange-100 text-orange-700 rounded-full px-2 py-0.5 font-semibold">
-              COD — collect ₹{Number(order.totalCharge).toFixed(2)}
+          {isCOD ? (
+            <span className="text-xs bg-orange-100 text-orange-700 rounded-full px-2.5 py-0.5
+                             font-bold ring-1 ring-orange-200">
+              💵 COD — collect ₹{Number(order.totalCharge).toFixed(2)}
             </span>
-          )}
-          {!isCOD && (
-            <span className="text-xs bg-blue-100 text-blue-700 rounded-full px-2 py-0.5 font-medium">
+          ) : (
+            <span className="text-xs bg-blue-100 text-blue-700 rounded-full px-2.5 py-0.5
+                             font-semibold ring-1 ring-blue-200">
               Prepaid
             </span>
           )}
-          <span className="text-xs text-gray-500">
-            {order.chargeableWeightKg} kg
-          </span>
+          <span className="text-xs text-gray-500 font-medium">{order.chargeableWeightKg} kg</span>
           {order.scheduledDate && (
-            <span className="text-xs bg-purple-100 text-purple-700 rounded-full px-2 py-0.5 font-medium">
+            <span className="text-xs bg-purple-100 text-purple-700 rounded-full px-2.5 py-0.5
+                             font-semibold ring-1 ring-purple-200">
               📅 {new Date(order.scheduledDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
             </span>
           )}
@@ -156,10 +159,8 @@ function AgentOrderCard({ order, muted }) {
       </div>
 
       {/* Arrow */}
-      <svg
-        className="w-5 h-5 text-gray-300 group-hover:text-brand-400 transition-colors shrink-0 hidden sm:block"
-        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-      >
+      <svg className="w-5 h-5 text-gray-300 group-hover:text-brand-500 transition-colors shrink-0 hidden sm:block"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
       </svg>
     </Link>
