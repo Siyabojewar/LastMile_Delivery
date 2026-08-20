@@ -1,18 +1,31 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../utils/api';
-import LoadingSpinner from '../../components/shared/LoadingSpinner';
-import Alert from '../../components/shared/Alert';
+import PageHeader from '../../components/shared/PageHeader';
 import StatusBadge from '../../components/shared/StatusBadge';
+import Alert from '../../components/shared/Alert';
+import EmptyState from '../../components/shared/EmptyState';
+import { TableSkeleton } from '../../components/shared/LoadingSpinner';
 
-const STATUSES = ['', 'Created','PickedUp','InTransit','OutForDelivery','Delivered','Failed','Rescheduled'];
+const STATUSES = [
+  { value: '',               label: 'All Statuses' },
+  { value: 'Created',        label: 'Created' },
+  { value: 'PickedUp',       label: 'Picked Up' },
+  { value: 'InTransit',      label: 'In Transit' },
+  { value: 'OutForDelivery', label: 'Out for Delivery' },
+  { value: 'Delivered',      label: 'Delivered' },
+  { value: 'Failed',         label: 'Failed' },
+  { value: 'Rescheduled',    label: 'Rescheduled' },
+];
 
 export default function AdminOrders() {
-  const [orders, setOrders] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [orders, setOrders]   = useState([]);
+  const [total, setTotal]     = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [filter, setFilter] = useState({ status: '', page: 1 });
+  const [error, setError]     = useState('');
+  const [actionMsg, setActionMsg] = useState({ type: '', text: '' });
+  const [filter, setFilter]   = useState({ status: '', page: 1 });
+  const [assigning, setAssigning] = useState(null); // orderId being auto-assigned
 
   const fetchOrders = useCallback(() => {
     setLoading(true);
@@ -28,59 +41,190 @@ export default function AdminOrders() {
 
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
-  async function autoAssign(orderId, e) {
-    e.preventDefault();
+  async function handleAutoAssign(orderId) {
+    setAssigning(orderId);
+    setActionMsg({ type: '', text: '' });
     try {
       await api.post(`/orders/${orderId}/auto-assign`, {});
+      setActionMsg({ type: 'success', text: 'Agent auto-assigned successfully.' });
       fetchOrders();
     } catch (err) {
-      alert(err.message);
+      setActionMsg({ type: 'error', text: err.message });
+    } finally {
+      setAssigning(null);
     }
   }
 
+  const totalPages = Math.ceil(total / 20) || 1;
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">All Orders</h1>
-        <div className="flex gap-2">
-          <select className="input w-auto" value={filter.status}
-            onChange={e => setFilter({ status: e.target.value, page: 1 })}>
-            {STATUSES.map(s => <option key={s} value={s}>{s || 'All Statuses'}</option>)}
+      <PageHeader
+        icon="📋"
+        title="All Orders"
+        description="View, filter, assign agents, and manage every order in the system."
+      />
+
+      {/* Filter bar */}
+      <div className="flex flex-wrap items-center gap-3 mb-5">
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-gray-600 whitespace-nowrap">Filter by status:</label>
+          <select
+            className="input w-auto text-sm"
+            value={filter.status}
+            onChange={e => setFilter({ status: e.target.value, page: 1 })}
+          >
+            {STATUSES.map(s => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
           </select>
+        </div>
+        <div className="ml-auto text-sm text-gray-400">
+          {!loading && (
+            <span>
+              {total} order{total !== 1 ? 's' : ''}
+              {filter.status ? ` · ${STATUSES.find(s => s.value === filter.status)?.label}` : ''}
+            </span>
+          )}
         </div>
       </div>
 
-      <Alert message={error} />
-      {loading ? <LoadingSpinner /> : (
+      {actionMsg.text && (
+        <Alert type={actionMsg.type} message={actionMsg.text} className="mb-4" />
+      )}
+      {error && <Alert message={error} className="mb-4" />}
+
+      {loading ? (
+        <TableSkeleton rows={6} cols={8} />
+      ) : orders.length === 0 ? (
+        <EmptyState
+          icon="🔍"
+          title="No orders found"
+          description={
+            filter.status
+              ? `There are no orders with status "${STATUSES.find(s => s.value === filter.status)?.label}". Try a different filter.`
+              : 'No orders have been placed yet. They will appear here once customers start ordering.'
+          }
+          action={filter.status ? { label: 'Clear filter', onClick: () => setFilter({ status: '', page: 1 }) } : undefined}
+        />
+      ) : (
         <>
-          <div className="text-sm text-gray-500 mb-3">{total} order{total !== 1 ? 's' : ''} found</div>
-          <div className="overflow-x-auto rounded-xl border border-gray-200">
-            <table className="min-w-full divide-y divide-gray-200 bg-white text-sm">
-              <thead className="bg-gray-50">
+          <div className="table-container">
+            <table className="table">
+              <thead className="table-head">
                 <tr>
-                  {['Order ID','Customer','Route','Type','Charge','Status','Agent','Actions'].map(h => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{h}</th>
-                  ))}
+                  <th className="table-th">Order</th>
+                  <th className="table-th">Customer</th>
+                  <th className="table-th">Route</th>
+                  <th className="table-th">Type</th>
+                  <th className="table-th">Charge</th>
+                  <th className="table-th">Status</th>
+                  <th className="table-th">Agent</th>
+                  <th className="table-th">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {orders.map(o => (
-                  <tr key={o.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-xs text-gray-400">#{o.id.slice(-8)}</td>
-                    <td className="px-4 py-3">{o.customer?.name}</td>
-                    <td className="px-4 py-3 text-xs">
-                      <div>{o.pickupPincode} → {o.dropPincode}</div>
-                      <div className="text-gray-400">{o.dropZone?.name || '—'}</div>
+                {orders.map((o, idx) => (
+                  <tr
+                    key={o.id}
+                    className={`table-row ${idx % 2 === 1 ? 'table-row-even' : ''}`}
+                  >
+                    {/* Order ID + date */}
+                    <td className="table-td">
+                      <p className="font-mono text-xs font-semibold text-gray-600">
+                        #{o.id.slice(-8).toUpperCase()}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {new Date(o.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                      </p>
                     </td>
-                    <td className="px-4 py-3">{o.orderType} / {o.paymentType}</td>
-                    <td className="px-4 py-3 font-medium">₹{Number(o.totalCharge).toFixed(2)}</td>
-                    <td className="px-4 py-3"><StatusBadge status={o.status} /></td>
-                    <td className="px-4 py-3 text-xs">{o.assignedAgent?.name || <span className="text-gray-400">Unassigned</span>}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <Link to={`/admin/orders/${o.id}`} className="text-brand-600 hover:underline text-xs">View</Link>
+
+                    {/* Customer */}
+                    <td className="table-td">
+                      <p className="font-medium text-gray-800 text-sm whitespace-nowrap">
+                        {o.customer?.name || '—'}
+                      </p>
+                      <p className="text-xs text-gray-400 truncate max-w-[140px]">
+                        {o.customer?.email}
+                      </p>
+                    </td>
+
+                    {/* Route */}
+                    <td className="table-td">
+                      <div className="text-xs space-y-0.5">
+                        <p className="text-gray-600">
+                          <span className="text-gray-400">From</span> {o.pickupPincode}
+                        </p>
+                        <p className="text-gray-600">
+                          <span className="text-gray-400">To</span> {o.dropPincode}
+                        </p>
+                        {o.dropZone && (
+                          <p className="text-gray-400">{o.dropZone.name}</p>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Type */}
+                    <td className="table-td">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs bg-gray-100 text-gray-700 rounded-full px-2 py-0.5 font-medium w-fit">
+                          {o.orderType}
+                        </span>
+                        <span className={`text-xs rounded-full px-2 py-0.5 font-medium w-fit ${
+                          o.paymentType === 'COD'
+                            ? 'bg-orange-100 text-orange-700'
+                            : 'bg-blue-100 text-blue-700'
+                        }`}>
+                          {o.paymentType}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Charge */}
+                    <td className="table-td">
+                      <p className="font-semibold text-gray-800 text-sm whitespace-nowrap">
+                        ₹{Number(o.totalCharge).toFixed(2)}
+                      </p>
+                    </td>
+
+                    {/* Status */}
+                    <td className="table-td">
+                      <StatusBadge status={o.status} />
+                    </td>
+
+                    {/* Agent */}
+                    <td className="table-td">
+                      {o.assignedAgent ? (
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold shrink-0">
+                            {o.assignedAgent.name?.[0]?.toUpperCase()}
+                          </div>
+                          <span className="text-sm text-gray-700 whitespace-nowrap">
+                            {o.assignedAgent.name}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400 italic">Unassigned</span>
+                      )}
+                    </td>
+
+                    {/* Actions */}
+                    <td className="table-td">
+                      <div className="flex items-center gap-3 whitespace-nowrap">
+                        <Link
+                          to={`/admin/orders/${o.id}`}
+                          className="text-xs font-medium text-brand-600 hover:text-brand-800 hover:underline"
+                        >
+                          View →
+                        </Link>
                         {!o.assignedAgentId && (
-                          <button onClick={e => autoAssign(o.id, e)} className="text-green-600 hover:underline text-xs">Auto-Assign</button>
+                          <button
+                            onClick={() => handleAutoAssign(o.id)}
+                            disabled={assigning === o.id}
+                            className="text-xs font-medium text-emerald-600 hover:text-emerald-800 hover:underline disabled:opacity-50"
+                          >
+                            {assigning === o.id ? 'Assigning…' : 'Auto-assign'}
+                          </button>
                         )}
                       </div>
                     </td>
@@ -91,12 +235,24 @@ export default function AdminOrders() {
           </div>
 
           {/* Pagination */}
-          <div className="flex justify-between items-center mt-4 text-sm">
-            <button className="btn-secondary" disabled={filter.page <= 1}
-              onClick={() => setFilter(f => ({ ...f, page: f.page - 1 }))}>Previous</button>
-            <span className="text-gray-500">Page {filter.page}</span>
-            <button className="btn-secondary" disabled={orders.length < 20}
-              onClick={() => setFilter(f => ({ ...f, page: f.page + 1 }))}>Next</button>
+          <div className="flex items-center justify-between mt-5 gap-3 flex-wrap">
+            <button
+              className="btn-secondary btn-sm"
+              disabled={filter.page <= 1}
+              onClick={() => setFilter(f => ({ ...f, page: f.page - 1 }))}
+            >
+              ← Previous
+            </button>
+            <span className="text-sm text-gray-500">
+              Page <strong>{filter.page}</strong> of <strong>{totalPages}</strong>
+            </span>
+            <button
+              className="btn-secondary btn-sm"
+              disabled={orders.length < 20}
+              onClick={() => setFilter(f => ({ ...f, page: f.page + 1 }))}
+            >
+              Next →
+            </button>
           </div>
         </>
       )}
