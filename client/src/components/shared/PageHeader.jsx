@@ -1,31 +1,70 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 /**
- * Consistent page header used at the top of every page.
+ * Consistent page header with optional breadcrumb trail.
  *
  * Props:
- *   title       – main heading (required)
- *   description – one-line subtitle explaining the page's purpose
- *   action      – { label, href } | { label, onClick, variant? }
- *   back        – boolean: show a ← Back button that calls navigate(-1)
- *   backLabel   – override default "Back" label
- *   icon        – emoji shown in a pill left of the title
- *   children    – extra elements rendered next to the action button
+ *   title        – main heading (required)
+ *   description  – one-line subtitle
+ *   action       – { label, href } | { label, onClick, variant? }
+ *   back         – boolean: show ← back button
+ *   backLabel    – label for the back button (default "Back")
+ *   backHref     – if set, navigates to this path instead of navigate(-1)
+ *   breadcrumbs  – [{ label, href }] — renders a breadcrumb trail above the title
+ *   icon         – emoji shown in a round pill
+ *   children     – extra elements rendered beside the action button
  */
-export default function PageHeader({ title, description, action, back, backLabel = 'Back', icon, children }) {
+export default function PageHeader({
+  title, description, action, back, backLabel = 'Back', backHref,
+  breadcrumbs, icon, children,
+}) {
   const navigate = useNavigate();
+
+  function handleBack() {
+    if (backHref) navigate(backHref);
+    else navigate(-1);
+  }
 
   return (
     <div className="mb-8">
-      {back && (
+      {/* ── Breadcrumb trail ─────────────────────────────────────────────── */}
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-3" aria-label="Breadcrumb">
+          {breadcrumbs.map((crumb, i) => (
+            <React.Fragment key={crumb.label}>
+              {i > 0 && (
+                <svg className="w-3 h-3 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              )}
+              {crumb.href && i < breadcrumbs.length - 1 ? (
+                <Link
+                  to={crumb.href}
+                  className="font-medium text-brand-500 hover:text-brand-700 hover:underline transition-colors"
+                >
+                  {crumb.label}
+                </Link>
+              ) : (
+                <span className={i === breadcrumbs.length - 1 ? 'font-semibold text-gray-600 truncate max-w-[200px]' : ''}>
+                  {crumb.label}
+                </span>
+              )}
+            </React.Fragment>
+          ))}
+        </nav>
+      )}
+
+      {/* ── Back button (when no breadcrumbs) ────────────────────────────── */}
+      {back && !breadcrumbs && (
         <button
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-1.5 text-sm text-brand-600 hover:text-brand-700 font-medium mb-4 group"
+          onClick={handleBack}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600
+                     hover:text-brand-700 mb-4 group transition-colors"
         >
           <svg
-            className="w-4 h-4 transition-transform group-hover:-translate-x-0.5"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+            className="w-4 h-4 transition-transform duration-150 group-hover:-translate-x-0.5"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
@@ -33,17 +72,20 @@ export default function PageHeader({ title, description, action, back, backLabel
         </button>
       )}
 
+      {/* ── Title row ────────────────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           {icon && (
-            <div className="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-lg shrink-0 select-none">
+            <div className="w-11 h-11 rounded-2xl bg-brand-100 text-brand-700 flex items-center
+                            justify-center text-xl shrink-0 select-none shadow-card
+                            ring-1 ring-brand-200">
               {icon}
             </div>
           )}
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 leading-tight">{title}</h1>
+          <div className="min-w-0">
+            <h1 className="page-title truncate">{title}</h1>
             {description && (
-              <p className="mt-0.5 text-sm text-gray-500">{description}</p>
+              <p className="page-subtitle">{description}</p>
             )}
           </div>
         </div>
@@ -53,8 +95,8 @@ export default function PageHeader({ title, description, action, back, backLabel
             {children}
             {action && (
               action.href
-                ? <Link to={action.href} className={variantClass(action.variant)}>{action.label}</Link>
-                : <button onClick={action.onClick} className={variantClass(action.variant)}>{action.label}</button>
+                ? <Link to={action.href} className={cls(action.variant)}>{action.label}</Link>
+                : <button onClick={action.onClick} className={cls(action.variant)}>{action.label}</button>
             )}
           </div>
         )}
@@ -63,7 +105,7 @@ export default function PageHeader({ title, description, action, back, backLabel
   );
 }
 
-function variantClass(variant) {
+function cls(variant) {
   if (variant === 'danger')    return 'btn-danger';
   if (variant === 'secondary') return 'btn-secondary';
   return 'btn-primary';
