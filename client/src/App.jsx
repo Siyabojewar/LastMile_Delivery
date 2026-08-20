@@ -43,9 +43,9 @@ function RoleHome() {
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-page-gradient">
       <Navbar />
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
         <Routes>
           {/* Public */}
           <Route path="/login"    element={<Login />} />
@@ -56,64 +56,49 @@ export default function App() {
 
           {/* Customer */}
           <Route path="/customer/orders" element={
-            <ProtectedRoute roles={['customer']}>
-              <CustomerOrders />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['customer']}><CustomerOrders /></ProtectedRoute>
           } />
           <Route path="/customer/new-order" element={
-            <ProtectedRoute roles={['customer']}>
-              <NewOrder />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['customer']}><NewOrder /></ProtectedRoute>
           } />
           <Route path="/customer/orders/:id" element={
-            <ProtectedRoute roles={['customer']}>
-              <TrackOrder />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['customer']}><TrackOrder /></ProtectedRoute>
           } />
 
           {/* Agent */}
           <Route path="/agent/orders" element={
-            <ProtectedRoute roles={['agent']}>
-              <AgentOrders />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['agent']}><AgentOrders /></ProtectedRoute>
           } />
           <Route path="/agent/orders/:id" element={
-            <ProtectedRoute roles={['agent']}>
-              <AgentOrderDetail />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['agent']}><AgentOrderDetail /></ProtectedRoute>
           } />
 
           {/* Admin */}
           <Route path="/admin/orders" element={
-            <ProtectedRoute roles={['admin']}>
-              <AdminOrders />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['admin']}><AdminOrders /></ProtectedRoute>
           } />
           <Route path="/admin/orders/:id" element={
-            <ProtectedRoute roles={['admin']}>
-              <AdminOrderDetail />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['admin']}><AdminOrderDetail /></ProtectedRoute>
           } />
           <Route path="/admin/zones" element={
-            <ProtectedRoute roles={['admin']}>
-              <AdminZones />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['admin']}><AdminZones /></ProtectedRoute>
           } />
           <Route path="/admin/rate-cards" element={
-            <ProtectedRoute roles={['admin']}>
-              <AdminRateCards />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['admin']}><AdminRateCards /></ProtectedRoute>
           } />
           <Route path="/admin/agents" element={
-            <ProtectedRoute roles={['admin']}>
-              <AdminAgents />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['admin']}><AdminAgents /></ProtectedRoute>
           } />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+
+      {/* Subtle footer */}
+      <footer className="text-center py-4 text-xs text-gray-400 border-t border-surface-200">
+        Last-Mile Delivery Tracker
+      </footer>
     </div>
   );
 }
