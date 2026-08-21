@@ -7,6 +7,8 @@ import LoadingSpinner from './components/shared/LoadingSpinner';
 // Auth pages
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Landing from './pages/Landing';
 
 // Customer pages
@@ -47,7 +49,7 @@ export default function App() {
   const isLanding = location.pathname === '/';
 
   return (
-    <div className="min-h-screen flex flex-col bg-page-gradient">
+    <div className="min-h-screen flex flex-col bg-page-gradient dark:bg-gray-900">
       <Navbar />
       <main className={`flex-1 w-full animate-fade-in ${
         isLanding
@@ -58,6 +60,8 @@ export default function App() {
           {/* Public */}
           <Route path="/login"    element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Root redirect */}
           <Route path="/" element={<RoleHome />} />
@@ -105,7 +109,7 @@ export default function App() {
 
       {/* Global footer — hidden on landing (it has its own) */}
       {!isLanding && (
-        <footer className="text-center py-4 text-xs text-gray-400 border-t border-surface-200 bg-white/50">
+        <footer className="text-center py-4 text-xs text-gray-400 dark:text-gray-500 border-t border-surface-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
           DeliverySync
         </footer>
       )}

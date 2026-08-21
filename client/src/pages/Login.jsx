@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import PasswordInput from '../components/shared/PasswordInput';
 
 export default function Login() {
   const { login } = useAuth();
@@ -66,10 +67,17 @@ export default function Login() {
             </div>
 
             <div>
-              <label htmlFor="password" className="label">Password</label>
-              <input
-                id="password" className="input" type="password" autoComplete="current-password"
-                placeholder="••••••••" required
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="label">Password</label>
+                <Link to="/forgot-password" className="text-xs text-brand-600 hover:text-brand-700 hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+              <PasswordInput
+                id="password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                required
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
               />

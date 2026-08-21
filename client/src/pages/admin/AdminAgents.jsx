@@ -4,6 +4,7 @@ import PageHeader from '../../components/shared/PageHeader';
 import Alert from '../../components/shared/Alert';
 import EmptyState from '../../components/shared/EmptyState';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import PasswordInput from '../../components/shared/PasswordInput';
 
 function useMsg() {
   const [msg, setMsg] = useState({ type: '', text: '' });
@@ -62,8 +63,15 @@ function CreateAgentForm({ zones, onCreated, working, setWorking, showMsg }) {
           <label htmlFor="ag-pass" className="label">Password <span className="text-red-400">*</span>
             <span className="ml-1 text-xs font-normal text-gray-400">(min. 6)</span>
           </label>
-          <input id="ag-pass" className="input" type="password" required minLength={6} placeholder="••••••••"
-            value={form.password} onChange={e => set('password', e.target.value)} />
+          <PasswordInput
+            id="ag-pass"
+            required
+            minLength={6}
+            placeholder="••••••••"
+            autoComplete="new-password"
+            value={form.password}
+            onChange={e => set('password', e.target.value)}
+          />
         </div>
         <div>
           <label htmlFor="ag-phone" className="label">Phone <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span></label>

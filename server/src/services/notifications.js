@@ -116,4 +116,52 @@ function stubSms(order, status) {
   );
 }
 
-module.exports = { sendStatusEmail };
+/**
+ * Sends a password reset email with a secure token link.
+ *
+ * @param {string} email - recipient email address
+ * @param {string} name - recipient name
+ * @param {string} token - password reset token
+ */
+async function sendPasswordResetEmail(email, name, token) {
+  const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password?token=${token}`;
+  
+  const htmlContent = `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #1d4ed8;">DeliverySync</h2>
+      <p>Hi ${name},</p>
+      <p>You requested a password reset for your DeliverySync account. Click the button below to set a new password:</p>
+      
+      <div style="margin: 24px 0; text-align: center;">
+        <a href="${resetUrl}" 
+           style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+          Reset Your Password
+        </a>
+      </div>
+      
+      <p style="color: #6b7280; font-size: 14px;">
+        This link will expire in 1 hour for security reasons. If you didn't request this reset, you can safely ignore this email.
+      </p>
+      
+      <p style="color: #6b7280; font-size: 12px; margin-top: 24px;">
+        Or copy and paste this URL into your browser:<br/>
+        <span style="word-break: break-all;">${resetUrl}</span>
+      </p>
+      
+      <p style="margin-top: 24px; color: #6b7280; font-size: 12px;">
+        This is an automated notification from DeliverySync.
+      </p>
+    </div>
+  `;
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM || process.env.SMTP_FROM || process.env.SMTP_USER,
+    to: email,
+    subject: 'Reset Your DeliverySync Password',
+    html: htmlContent,
+  };
+
+  return getTransporter().sendMail(mailOptions);
+}
+
+module.exports = { sendStatusEmail, sendPasswordResetEmail };

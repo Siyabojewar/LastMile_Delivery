@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import ThemeToggle from './ThemeToggle';
 
 const ROLE_META = {
   admin:    { color: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200', icon: '🛡', label: 'Admin' },
@@ -96,6 +97,9 @@ export default function Navbar() {
           {/* ── Right side ───────────────────────────────────────────────── */}
           {user ? (
             <div className="flex items-center gap-2.5">
+              {/* Theme toggle */}
+              <ThemeToggle />
+
               {/* User pill */}
               <div className="hidden sm:flex items-center gap-2 bg-white/15 rounded-xl px-3 py-1.5
                               ring-1 ring-white/20 backdrop-blur-sm">
@@ -141,7 +145,10 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
+              {/* Theme toggle */}
+              <ThemeToggle />
+              
               <Link to="/login"    className="text-xs font-semibold text-blue-100 hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-lg transition-all">Sign in</Link>
               <Link to="/register" className="text-xs font-bold bg-white text-brand-700 hover:bg-blue-50 px-3 py-1.5 rounded-lg shadow-card transition-all hover:-translate-y-px">Register</Link>
             </div>
