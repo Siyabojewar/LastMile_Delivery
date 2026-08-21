@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const ROLE_META = {
@@ -33,8 +33,10 @@ function NavItem({ to, children }) {
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const navigate  = useNavigate();
+  const location  = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isLanding = location.pathname === '/' && !user;
 
   function handleLogout() {
     logout();
@@ -60,7 +62,11 @@ export default function Navbar() {
   const roleMeta = user ? ROLE_META[user.role] : null;
 
   return (
-    <nav className="bg-hero-gradient shadow-card-md sticky top-0 z-40">
+    <nav className={`shadow-card-md sticky top-0 z-40 transition-colors duration-200 ${
+      isLanding
+        ? 'bg-brand-800/90 backdrop-blur-md border-b border-white/10'
+        : 'bg-hero-gradient'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 

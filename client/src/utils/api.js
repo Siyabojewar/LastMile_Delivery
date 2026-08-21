@@ -1,4 +1,6 @@
-const BASE = '/api/v1';
+// In production set VITE_API_URL=https://your-backend.onrender.com/api/v1
+// In local dev this falls back to the relative path handled by Vite's proxy
+const BASE = import.meta.env.VITE_API_URL || '/api/v1';
 
 function getToken() {
   return localStorage.getItem('token');

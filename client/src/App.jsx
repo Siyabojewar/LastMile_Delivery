@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Navbar from './components/shared/Navbar';
 import LoadingSpinner from './components/shared/LoadingSpinner';
@@ -7,6 +7,7 @@ import LoadingSpinner from './components/shared/LoadingSpinner';
 // Auth pages
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Landing from './pages/Landing';
 
 // Customer pages
 import CustomerOrders from './pages/customer/CustomerOrders';
@@ -34,7 +35,7 @@ function ProtectedRoute({ children, roles }) {
 
 function RoleHome() {
   const { user } = useAuth();
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Landing />;
   if (user.role === 'admin')    return <Navigate to="/admin/orders" replace />;
   if (user.role === 'agent')    return <Navigate to="/agent/orders" replace />;
   if (user.role === 'customer') return <Navigate to="/customer/orders" replace />;
@@ -42,10 +43,17 @@ function RoleHome() {
 }
 
 export default function App() {
+  const location = useLocation();
+  const isLanding = location.pathname === '/';
+
   return (
     <div className="min-h-screen flex flex-col bg-page-gradient">
       <Navbar />
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <main className={`flex-1 w-full animate-fade-in ${
+        isLanding
+          ? '' // landing handles its own layout + padding
+          : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'
+      }`}>
         <Routes>
           {/* Public */}
           <Route path="/login"    element={<Login />} />
@@ -95,10 +103,12 @@ export default function App() {
         </Routes>
       </main>
 
-      {/* Subtle footer */}
-      <footer className="text-center py-4 text-xs text-gray-400 border-t border-surface-200">
-        Last-Mile Delivery Tracker
-      </footer>
+      {/* Global footer — hidden on landing (it has its own) */}
+      {!isLanding && (
+        <footer className="text-center py-4 text-xs text-gray-400 border-t border-surface-200 bg-white/50">
+          Last-Mile Delivery Tracker
+        </footer>
+      )}
     </div>
   );
 }
