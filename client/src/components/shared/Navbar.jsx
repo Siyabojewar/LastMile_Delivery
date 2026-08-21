@@ -80,8 +80,8 @@ export default function Navbar() {
                              shadow-inner-sm ring-1 ring-white/30">
               📦
             </span>
-            <span className="hidden sm:block">Last-Mile Delivery Tracker</span>
-            <span className="sm:hidden font-bold">LMDT</span>
+            <span className="hidden sm:block">DeliverySync</span>
+            <span className="sm:hidden font-bold">DS</span>
           </Link>
 
           {/* ── Desktop nav links ────────────────────────────────────────── */}

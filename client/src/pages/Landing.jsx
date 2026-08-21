@@ -60,14 +60,14 @@ export default function Landing() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/15 text-white rounded-full
                           px-4 py-1.5 text-sm font-semibold mb-6 ring-1 ring-white/20">
-            <span>📦</span> Last-Mile Delivery Management Platform
+            <span>📦</span> Delivery Management Platform
           </div>
 
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white
                          leading-tight tracking-tight mb-6">
-            Fast, Reliable<br />
-            <span className="text-blue-200">Last-Mile Delivery</span>
+            Smarter Deliveries,<br />
+            <span className="text-blue-200">Powered by DeliverySync</span>
           </h1>
 
           {/* Subheading */}
@@ -234,7 +234,7 @@ export default function Landing() {
           <div className="flex items-center gap-2.5">
             <span className="w-7 h-7 rounded-xl bg-brand-600 text-white flex items-center
                              justify-center text-sm shadow-card">📦</span>
-            <span className="font-extrabold text-gray-800 text-sm">Last-Mile Delivery Tracker</span>
+            <span className="font-extrabold text-gray-800 text-sm">DeliverySync</span>
           </div>
           <p className="text-xs text-gray-400 text-center sm:text-right">
             Built with React, Express &amp; PostgreSQL ·{' '}

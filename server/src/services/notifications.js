@@ -77,7 +77,7 @@ function buildEmailBody(order, status) {
 
   return `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #1d4ed8;">Last-Mile Delivery Tracker</h2>
+      <h2 style="color: #1d4ed8;">DeliverySync</h2>
       <p>Hi ${order.customer?.name || 'Customer'},</p>
       <p>${statusMessages[status] || `Your order status has been updated to: <strong>${status}</strong>`}</p>
       <table style="border-collapse: collapse; width: 100%; margin-top: 16px;">
@@ -103,7 +103,7 @@ function buildEmailBody(order, status) {
         </tr>
       </table>
       <p style="margin-top: 24px; color: #6b7280; font-size: 12px;">
-        This is an automated notification from Last-Mile Delivery Tracker.
+        This is an automated notification from DeliverySync.
       </p>
     </div>
   `;

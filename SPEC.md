@@ -1,4 +1,4 @@
-# Last-Mile Delivery Tracker — Technical Specification
+# DeliverySync — Technical Specification
 
 Repo: https://github.com/Siyabojewar/LastMile_Delivery.git (branch: `main`, public)
 Local path: `C:\Users\siyab\OneDrive\Desktop\LastMile_Delivery`

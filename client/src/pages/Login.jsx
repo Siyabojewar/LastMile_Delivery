@@ -39,7 +39,7 @@ export default function Login() {
             📦
           </div>
           <h1 className="page-title">Welcome back</h1>
-          <p className="page-subtitle">Sign in to your Last-Mile Delivery account</p>
+          <p className="page-subtitle">Sign in to your DeliverySync account</p>
         </div>
 
         {/* ── Card ─────────────────────────────────────────────── */}

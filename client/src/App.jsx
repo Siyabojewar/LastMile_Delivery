@@ -106,7 +106,7 @@ export default function App() {
       {/* Global footer — hidden on landing (it has its own) */}
       {!isLanding && (
         <footer className="text-center py-4 text-xs text-gray-400 border-t border-surface-200 bg-white/50">
-          Last-Mile Delivery Tracker
+          DeliverySync
         </footer>
       )}
     </div>

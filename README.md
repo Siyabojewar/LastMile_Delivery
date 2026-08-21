@@ -1,4 +1,4 @@
-# Last-Mile Delivery Tracker
+# DeliverySync
 
 A full-stack delivery management system with role-based access for **customers**, **delivery agents**, and **admins**. Built with React (Vite) + Tailwind CSS, Node.js + Express, PostgreSQL + Prisma, and JWT authentication.
 
@@ -148,7 +148,7 @@ LastMile_Delivery/
 │   └── .env.example
 │
 └── client/
-    ├── index.html                   # App shell — title: "Last-Mile Delivery Tracker"
+    ├── index.html                   # App shell — title: "DeliverySync"
     ├── vite.config.js               # Vite + /api proxy to :4000
     ├── tailwind.config.js
     └── src/

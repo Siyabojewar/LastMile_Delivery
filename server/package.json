@@ -1,7 +1,7 @@
 {
-  "name": "last-mile-delivery-server",
+  "name": "deliverysync-server",
   "version": "1.0.0",
-  "description": "Last-Mile Delivery Tracker — Express API",
+  "description": "DeliverySync — Express API",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
