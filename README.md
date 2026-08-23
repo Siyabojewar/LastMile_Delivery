@@ -2,7 +2,10 @@
 
 A full-stack delivery management system with role-based access for **customers**, **delivery agents**, and **admins**. Built with React (Vite) + Tailwind CSS, Node.js + Express, PostgreSQL + Prisma, and JWT authentication.
 
-**Frontend highlights:** guided multi-step order creation with live volumetric preview, prominent quote card before confirmation, visual progress stepper for tracking, append-only audit timeline, mobile-responsive navbar with active-link highlighting, role-specific UI flows, and consistent empty states across all pages — all using Tailwind utility classes only, no additional UI libraries.
+**Live app:** https://last-mile-delivery-jet.vercel.app  
+**GitHub:** https://github.com/Siyabojewar/LastMile_Delivery
+
+**Frontend highlights:** guided multi-step order creation with live volumetric preview, prominent quote card before confirmation, visual progress stepper for tracking, append-only audit timeline, mobile-responsive navbar with active-link highlighting, role-specific UI flows, and consistent empty states across all pages.
 
 ---
 
@@ -46,14 +49,6 @@ JWT_SECRET="your_long_random_secret_here"
 JWT_EXPIRES_IN="7d"
 PORT=4000
 CLIENT_URL="http://localhost:5173"
-
-# Email (Mailtrap for dev, Gmail App Password for prod)
-SMTP_HOST="smtp.mailtrap.io"
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER="your_mailtrap_user"
-SMTP_PASS="your_mailtrap_pass"
-SMTP_FROM="noreply@lastmiledelivery.com"
 
 AUTO_ASSIGN_RADIUS_KM=50
 AGENT_CONCURRENT_ORDERS=1
@@ -253,6 +248,7 @@ All protected routes require: `Authorization: Bearer <token>`
 | PUT | `/admin/cod-rules/:id` | Update COD rule |
 | GET/POST | `/admin/agents` | List / create agent accounts |
 | PUT | `/admin/agents/:userId` | Update agent zone/availability/location |
+| POST | `/admin/users/:id/reset-password` | Admin sets a new password for any user |
 | GET | `/admin/orders` | All orders with full filter support |
 
 ---
