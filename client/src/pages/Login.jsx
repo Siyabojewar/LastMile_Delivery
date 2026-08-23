@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import PasswordInput from '../components/shared/PasswordInput';
@@ -140,12 +140,9 @@ export default function Login() {
               />
             </FormField>
             <div className="text-right -mt-4">
-              <Link
-                to="/forgot-password"
-                className="text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
-              >
-                Forgot password?
-              </Link>
+              <span className="text-sm text-gray-500">
+                Forgotten your password? Contact an administrator.
+              </span>
             </div>
 
             <button 

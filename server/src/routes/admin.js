@@ -314,4 +314,25 @@ router.get('/orders', async (req, res, next) => {
   }
 });
 
+// POST /api/v1/admin/users/:id/reset-password — admin sets a new password for any user
+router.post('/users/:id/reset-password', async (req, res, next) => {
+  try {
+    const { password } = req.body;
+    if (!password || password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    await prisma.user.update({ where: { id: req.params.id }, data: { passwordHash } });
+
+    console.log(`[Admin] Password reset for user ${user.email} by admin ${req.user.email}`);
+    res.json({ message: `Password updated for ${user.email}` });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

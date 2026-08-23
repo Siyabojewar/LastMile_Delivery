@@ -5,6 +5,7 @@ import Alert from '../../components/shared/Alert';
 import EmptyState from '../../components/shared/EmptyState';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import PasswordInput from '../../components/shared/PasswordInput';
+import MapPicker from '../../components/shared/MapPicker';
 
 function useMsg() {
   const [msg, setMsg] = useState({ type: '', text: '' });
@@ -22,12 +23,11 @@ function AvailabilityBadge({ available }) {
   );
 }
 
-function AgentAvatar({ name, size = 'md' }) {
+function AgentAvatar({ name }) {
   const initials = name ? name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() : '?';
-  const sz = size === 'lg' ? 'w-12 h-12 text-base' : 'w-9 h-9 text-sm';
   return (
-    <div className={`${sz} rounded-full bg-amber-200 text-amber-800 flex items-center justify-center
-                     font-extrabold shrink-0 select-none ring-2 ring-amber-300 shadow-sm`}>
+    <div className="w-12 h-12 rounded-full bg-amber-200 text-amber-800 flex items-center justify-center
+                    font-extrabold shrink-0 select-none ring-2 ring-amber-300 shadow-sm text-base">
       {initials}
     </div>
   );
@@ -63,15 +63,8 @@ function CreateAgentForm({ zones, onCreated, working, setWorking, showMsg }) {
           <label htmlFor="ag-pass" className="label">Password <span className="text-red-400">*</span>
             <span className="ml-1 text-xs font-normal text-gray-400">(min. 6)</span>
           </label>
-          <PasswordInput
-            id="ag-pass"
-            required
-            minLength={6}
-            placeholder="••••••••"
-            autoComplete="new-password"
-            value={form.password}
-            onChange={e => set('password', e.target.value)}
-          />
+          <PasswordInput id="ag-pass" required minLength={6} placeholder="••••••••" autoComplete="new-password"
+            value={form.password} onChange={e => set('password', e.target.value)} />
         </div>
         <div>
           <label htmlFor="ag-phone" className="label">Phone <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span></label>
@@ -80,7 +73,7 @@ function CreateAgentForm({ zones, onCreated, working, setWorking, showMsg }) {
         </div>
       </div>
       <div>
-        <label htmlFor="ag-zone" className="label">Home Zone <span className="text-xs font-normal text-gray-400 ml-1">(optional — used for auto-assignment)</span></label>
+        <label htmlFor="ag-zone" className="label">Home Zone <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span></label>
         <select id="ag-zone" className="input" value={form.currentZoneId} onChange={e => set('currentZoneId', e.target.value)}>
           <option value="">Select a zone…</option>
           {zones.map(z => <option key={z.id} value={z.id}>{z.name}</option>)}
@@ -89,21 +82,17 @@ function CreateAgentForm({ zones, onCreated, working, setWorking, showMsg }) {
       </div>
       <button type="button" className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
         onClick={() => setShowCoords(v => !v)}>
-        {showCoords ? '▲ Hide' : '▶ Set'} GPS coordinates (optional)
+        {showCoords ? '▲ Hide' : '▶ Set'} GPS location (optional)
       </button>
       {showCoords && (
-        <div className="grid grid-cols-2 gap-3 animate-slide-up">
-          <div>
-            <label htmlFor="ag-lat" className="label">Latitude</label>
-            <input id="ag-lat" className="input text-sm" type="number" step="0.0000001" placeholder="e.g. 18.5204"
-              value={form.currentLat} onChange={e => set('currentLat', e.target.value)} />
-          </div>
-          <div>
-            <label htmlFor="ag-lng" className="label">Longitude</label>
-            <input id="ag-lng" className="input text-sm" type="number" step="0.0000001" placeholder="e.g. 73.8567"
-              value={form.currentLng} onChange={e => set('currentLng', e.target.value)} />
-          </div>
-          <p className="col-span-2 field-hint">Used for haversine fallback in auto-assignment.</p>
+        <div className="space-y-2">
+          <p className="field-hint">Click the map to place a pin, or drag it to adjust. Used for auto-assignment.</p>
+          <MapPicker
+            lat={form.currentLat}
+            lng={form.currentLng}
+            onChange={({ lat, lng }) => { set('currentLat', lat ?? ''); set('currentLng', lng ?? ''); }}
+            height="240px"
+          />
         </div>
       )}
       <button type="submit" className="btn-primary w-full" disabled={working}>
@@ -113,75 +102,111 @@ function CreateAgentForm({ zones, onCreated, working, setWorking, showMsg }) {
   );
 }
 
-function AgentCard({ agent, onToggle, toggling }) {
+function AgentCard({ agent, onToggle, toggling, onResetPassword }) {
   const { user, currentZone, isAvailable, currentLat, currentLng, lastLocationUpdate } = agent;
   const hasCoords = currentLat != null && currentLng != null;
   return (
-    <div className="card-sm flex items-start gap-3 hover:shadow-md transition-shadow duration-200">
-      <AgentAvatar name={user?.name} size="lg" />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-2 flex-wrap">
-          <div className="min-w-0">
-            <p className="font-bold text-gray-900 text-sm truncate">{user?.name}</p>
-            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
-            {user?.phone && <p className="text-xs text-gray-400 mt-0.5">{user.phone}</p>}
+    <div className="card-sm hover:shadow-md transition-shadow duration-200">
+      <div className="flex items-start gap-3">
+        <AgentAvatar name={user?.name} />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2 flex-wrap">
+            <div className="min-w-0">
+              <p className="font-bold text-gray-900 text-sm truncate">{user?.name}</p>
+              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+              {user?.phone && <p className="text-xs text-gray-400 mt-0.5">{user.phone}</p>}
+            </div>
+            <AvailabilityBadge available={isAvailable} />
           </div>
-          <AvailabilityBadge available={isAvailable} />
-        </div>
-        <div className="flex flex-wrap items-center gap-2 mt-2.5">
-          {currentZone ? (
-            <span className="inline-flex items-center gap-1.5 text-xs bg-blue-50 text-blue-700
-                             rounded-full px-2.5 py-0.5 font-semibold ring-1 ring-blue-200">
-              🗺 {currentZone.name}
-            </span>
-          ) : (
-            <span className="text-xs text-gray-400 italic">No zone assigned</span>
-          )}
-          {hasCoords && (
-            <span className="text-xs text-gray-400 flex items-center gap-1 font-mono">
-              📍 {parseFloat(currentLat).toFixed(4)}, {parseFloat(currentLng).toFixed(4)}
-            </span>
-          )}
-          {lastLocationUpdate && (
-            <span className="text-xs text-gray-300">
-              · {new Date(lastLocationUpdate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-            </span>
-          )}
+          <div className="flex flex-wrap items-center gap-2 mt-2.5">
+            {currentZone ? (
+              <span className="inline-flex items-center gap-1.5 text-xs bg-blue-50 text-blue-700 rounded-full px-2.5 py-0.5 font-semibold ring-1 ring-blue-200">
+                🗺 {currentZone.name}
+              </span>
+            ) : (
+              <span className="text-xs text-gray-400 italic">No zone assigned</span>
+            )}
+            {hasCoords && (
+              <span className="text-xs text-gray-400 font-mono">
+                📍 {parseFloat(currentLat).toFixed(4)}, {parseFloat(currentLng).toFixed(4)}
+              </span>
+            )}
+            {lastLocationUpdate && (
+              <span className="text-xs text-gray-300">
+                · {new Date(lastLocationUpdate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+              </span>
+            )}
+          </div>
         </div>
       </div>
-      <button
-        onClick={() => onToggle(agent.userId, isAvailable)}
-        disabled={toggling === agent.userId}
-        className={`btn-sm shrink-0 ${isAvailable
-          ? 'btn-secondary text-red-600 hover:bg-red-50 border-red-200 hover:border-red-300'
-          : 'btn-secondary text-emerald-600 hover:bg-emerald-50 border-emerald-200 hover:border-emerald-300'}`}
-      >
-        {toggling === agent.userId
-          ? <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-          : isAvailable ? '✗ Mark Busy' : '✓ Mark Available'}
-      </button>
+      {/* Actions row */}
+      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+        <button
+          onClick={() => onToggle(agent.userId, isAvailable)}
+          disabled={toggling === agent.userId}
+          className={`btn-sm flex-1 ${isAvailable
+            ? 'btn-secondary text-red-600 hover:bg-red-50 border-red-200 hover:border-red-300'
+            : 'btn-secondary text-emerald-600 hover:bg-emerald-50 border-emerald-200 hover:border-emerald-300'}`}
+        >
+          {toggling === agent.userId
+            ? <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            : isAvailable ? '✗ Mark Busy' : '✓ Mark Available'}
+        </button>
+        <button
+          onClick={() => onResetPassword({ userId: agent.userId, name: user?.name, email: user?.email })}
+          className="btn-sm btn-secondary text-amber-600 hover:bg-amber-50 border-amber-200 hover:border-amber-300"
+          title="Reset this agent's password"
+        >
+          🔑 Reset Password
+        </button>
+      </div>
     </div>
   );
 }
 
 export default function AdminAgents() {
-  const [agents, setAgents]   = useState([]);
-  const [zones, setZones]     = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [working, setWorking] = useState(false);
-  const [toggling, setToggling] = useState(null);
-  const [search, setSearch]   = useState('');
+  const [agents, setAgents]       = useState([]);
+  const [zones, setZones]         = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [working, setWorking]     = useState(false);
+  const [toggling, setToggling]   = useState(null);
+  const [search, setSearch]       = useState('');
   const [filterAvail, setFilterAvail] = useState('all');
-  const [msg, showMsg]        = useMsg();
+  const [msg, showMsg]            = useMsg();
+  const [resetTarget, setResetTarget] = useState(null); // { userId, name, email }
+  const [resetPw, setResetPw]     = useState('');
+  const [resetting, setResetting] = useState(false);
 
-  function fetchAll() { return Promise.all([api.get('/admin/agents'), api.get('/admin/zones')]).then(([a, z]) => { setAgents(a); setZones(z); }); }
-  useEffect(() => { fetchAll().catch(err => showMsg('error', err.message)).finally(() => setLoading(false)); }, []);
+  function fetchAll() {
+    return Promise.all([api.get('/admin/agents'), api.get('/admin/zones')])
+      .then(([a, z]) => { setAgents(a); setZones(z); });
+  }
+
+  useEffect(() => {
+    fetchAll().catch(err => showMsg('error', err.message)).finally(() => setLoading(false));
+  }, []);
 
   async function toggleAvailability(userId, current) {
     setToggling(userId);
     try { await api.put(`/admin/agents/${userId}`, { isAvailable: !current }); await fetchAll(); showMsg('success', `Agent marked as ${current ? 'Busy' : 'Available'}.`); }
     catch (err) { showMsg('error', err.message); }
     finally { setToggling(null); }
+  }
+
+  async function handleResetPassword(e) {
+    e.preventDefault();
+    if (!resetTarget || resetPw.length < 6) return;
+    setResetting(true);
+    try {
+      await api.post(`/admin/users/${resetTarget.userId}/reset-password`, { password: resetPw });
+      showMsg('success', `Password updated for ${resetTarget.email}`);
+      setResetTarget(null);
+      setResetPw('');
+    } catch (err) {
+      showMsg('error', err.message);
+    } finally {
+      setResetting(false);
+    }
   }
 
   const filtered = agents.filter(a => {
@@ -198,20 +223,54 @@ export default function AdminAgents() {
   return (
     <div className="max-w-5xl mx-auto">
       <PageHeader icon="🚴" title="Delivery Agents"
-        description="Create agent accounts and manage availability. Agents are assigned orders manually or automatically." />
+        description="Create agent accounts, manage availability, and reset passwords." />
       {msg.text && <Alert type={msg.type} message={msg.text} className="mb-5" />}
+
+      {/* Reset password modal */}
+      {resetTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-1">Reset Password</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Set a new password for <strong>{resetTarget.name}</strong> ({resetTarget.email})
+            </p>
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              <div>
+                <label className="label">New Password <span className="text-red-400">*</span>
+                  <span className="ml-1 text-xs font-normal text-gray-400">(min. 6 characters)</span>
+                </label>
+                <PasswordInput
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  value={resetPw}
+                  onChange={e => setResetPw(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-3">
+                <button type="submit" className="btn-primary flex-1" disabled={resetting || resetPw.length < 6}>
+                  {resetting ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Saving…</> : '✓ Set Password'}
+                </button>
+                <button type="button" className="btn-secondary flex-1"
+                  onClick={() => { setResetTarget(null); setResetPw(''); }}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       {agents.length > 0 && (
         <div className="grid grid-cols-3 gap-4 mb-6">
           {[
-            { label: 'Total Agents',  value: agents.length,  bg: 'bg-gray-100 border-surface-200', txt: 'text-gray-700' },
-            { label: 'Available',     value: availCount,     bg: 'bg-emerald-50 border-emerald-200',  txt: 'text-emerald-700' },
-            { label: 'Busy / Assigned', value: busyCount,   bg: 'bg-red-50 border-red-200',          txt: 'text-red-700' },
+            { label: 'Total Agents',    value: agents.length, bg: 'bg-gray-100',     txt: 'text-gray-700' },
+            { label: 'Available',       value: availCount,    bg: 'bg-emerald-50',   txt: 'text-emerald-700' },
+            { label: 'Busy / Assigned', value: busyCount,     bg: 'bg-red-50',       txt: 'text-red-700' },
           ].map(s => (
-            <div key={s.label} className={`stat-card ${s.bg}`}>
-              <p className={`stat-number ${s.txt}`}>{s.value}</p>
-              <p className={`stat-label ${s.txt}`}>{s.label}</p>
+            <div key={s.label} className={`rounded-xl border p-4 text-center ${s.bg}`}>
+              <p className={`text-2xl font-bold ${s.txt}`}>{s.value}</p>
+              <p className={`text-xs font-semibold mt-1 ${s.txt}`}>{s.label}</p>
             </div>
           ))}
         </div>
@@ -220,9 +279,9 @@ export default function AdminAgents() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Create form */}
         <div className="lg:col-span-2">
-          <div className="card-form sticky top-20">
-            <div className="flex items-center gap-2 mb-5 pb-3 border-b border-blue-100">
-              <span className="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-sm shrink-0 ring-1 ring-amber-200">➕</span>
+          <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 sticky top-20">
+            <div className="flex items-center gap-2 mb-5 pb-3 border-b border-blue-200">
+              <span className="text-lg">➕</span>
               <h2 className="font-bold text-gray-800">Create Agent Account</h2>
             </div>
             <CreateAgentForm zones={zones} onCreated={fetchAll} working={working} setWorking={setWorking} showMsg={showMsg} />
@@ -231,22 +290,19 @@ export default function AdminAgents() {
 
         {/* Agent list */}
         <div className="lg:col-span-3">
-          {/* Search + filter */}
           <div className="flex flex-wrap gap-3 mb-4 items-center">
             <div className="relative flex-1 min-w-[180px]">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
-                   fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <input className="search-input pl-9 text-sm" placeholder="Search agents by name, email or zone…"
+              <input className="input pl-9 text-sm" placeholder="Search agents…"
                 value={search} onChange={e => setSearch(e.target.value)} />
             </div>
-            <div className="flex rounded-xl border border-surface-200 overflow-hidden text-sm shadow-sm">
+            <div className="flex rounded-xl border border-gray-200 overflow-hidden text-sm">
               {[{ key: 'all', label: 'All' }, { key: 'available', label: '✓ Available' }, { key: 'busy', label: '✗ Busy' }].map(f => (
                 <button key={f.key} onClick={() => setFilterAvail(f.key)}
-                  className={`px-3 py-1.5 font-semibold transition-colors ${
-                    filterAvail === f.key ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-surface-50'
-                  }`}>
+                  className={`px-3 py-1.5 font-semibold transition-colors ${filterAvail === f.key ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
                   {f.label}
                 </button>
               ))}
@@ -254,8 +310,7 @@ export default function AdminAgents() {
           </div>
 
           <p className="text-xs text-gray-400 font-semibold mb-3">
-            {filtered.length} agent{filtered.length !== 1 ? 's' : ''}
-            {search || filterAvail !== 'all' ? ' matching filter' : ' total'}
+            {filtered.length} agent{filtered.length !== 1 ? 's' : ''}{search || filterAvail !== 'all' ? ' matching filter' : ' total'}
           </p>
 
           {agents.length === 0 ? (
@@ -263,14 +318,16 @@ export default function AdminAgents() {
               description="Create your first delivery agent using the form on the left." />
           ) : filtered.length === 0 ? (
             <div className="card-sm text-center py-10">
-              <p className="text-sm text-gray-400">No agents match your search or filter.</p>
+              <p className="text-sm text-gray-400">No agents match your filter.</p>
               <button onClick={() => { setSearch(''); setFilterAvail('all'); }}
                 className="mt-3 text-xs font-bold text-blue-600 hover:underline">Clear filters</button>
             </div>
           ) : (
             <div className="space-y-3">
               {filtered.map(agent => (
-                <AgentCard key={agent.userId} agent={agent} onToggle={toggleAvailability} toggling={toggling} />
+                <AgentCard key={agent.userId} agent={agent}
+                  onToggle={toggleAvailability} toggling={toggling}
+                  onResetPassword={setResetTarget} />
               ))}
             </div>
           )}
