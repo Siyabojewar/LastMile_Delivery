@@ -3,9 +3,9 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const ROLE_META = {
-  admin:    { color: 'bg-purple-50 text-purple-700 ring-1 ring-purple-200', icon: '🛡', label: 'Admin' },
-  agent:    { color: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',   icon: '🚴', label: 'Agent' },
-  customer: { color: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200', icon: '📦', label: 'Customer' },
+  admin:    { pill: 'bg-purple-600 text-white', icon: '🛡', label: 'Admin',    border: 'border-purple-300' },
+  agent:    { pill: 'bg-amber-500 text-white',  icon: '🚴', label: 'Agent',    border: 'border-amber-300' },
+  customer: { pill: 'bg-emerald-600 text-white',icon: '📦', label: 'Customer', border: 'border-emerald-300' },
 };
 
 function NavItem({ to, children, icon }) {
@@ -91,16 +91,11 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             {user ? (
               <>
-                <div className="hidden sm:flex items-center gap-3 bg-gray-50 rounded-xl px-3 py-2 ring-1 ring-gray-200">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${roleMeta?.color}`}>
-                    {roleMeta?.icon}
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 leading-tight truncate max-w-[120px]">{user.name}</p>
-                    <span className={`text-xs font-medium capitalize px-1.5 py-0.5 rounded-md leading-tight ${roleMeta?.color}`}>
-                      {roleMeta?.label}
-                    </span>
-                  </div>
+                <div className="hidden sm:flex items-center gap-2.5 bg-gray-50 rounded-xl px-3 py-2 ring-1 ring-gray-200">
+                  <p className="text-sm font-semibold text-gray-900 leading-tight truncate max-w-[120px]">{user.name}</p>
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full leading-tight ${roleMeta?.pill}`}>
+                    {roleMeta?.icon} {roleMeta?.label}
+                  </span>
                 </div>
 
                 <button
@@ -149,15 +144,12 @@ export default function Navbar() {
         <div className="md:hidden border-t border-gray-200 bg-white">
           <div className="px-4 py-4 space-y-2">
             <div className="flex items-center gap-3 px-3 py-3 mb-4 bg-gray-50 rounded-xl ring-1 ring-gray-200">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold ${roleMeta?.color}`}>
-                {roleMeta?.icon}
-              </div>
-              <div className="flex flex-col min-w-0">
+              <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-900 leading-tight">{user.name}</p>
-                <span className={`text-xs font-medium capitalize px-2 py-0.5 rounded-md mt-0.5 inline-block ${roleMeta?.color}`}>
-                  {roleMeta?.label}
-                </span>
               </div>
+              <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${roleMeta?.pill}`}>
+                {roleMeta?.icon} {roleMeta?.label}
+              </span>
             </div>
 
             {navLinks.map(l => (

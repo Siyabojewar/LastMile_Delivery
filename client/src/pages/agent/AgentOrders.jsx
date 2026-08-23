@@ -6,6 +6,7 @@ import EmptyState from '../../components/shared/EmptyState';
 import Alert from '../../components/shared/Alert';
 import { TableSkeleton } from '../../components/shared/LoadingSpinner';
 import { STATUS_CATEGORIES } from '../../utils/statusColors';
+import RoleBanner from '../../components/shared/RoleBanner';
 
 export default function AgentOrders() {
   const [orders, setOrders] = useState([]);
@@ -25,6 +26,7 @@ export default function AgentOrders() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      <RoleBanner />
       <PageHeader
         icon="🚴"
         title="Assigned Orders"

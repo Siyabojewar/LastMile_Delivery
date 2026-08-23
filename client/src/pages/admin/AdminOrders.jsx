@@ -7,6 +7,7 @@ import Alert from '../../components/shared/Alert';
 import EmptyState from '../../components/shared/EmptyState';
 import { TableSkeleton } from '../../components/shared/LoadingSpinner';
 import { STATUS_LABELS } from '../../utils/statusColors';
+import RoleBanner from '../../components/shared/RoleBanner';
 
 const STATUSES = [
   { value: '', label: 'All Statuses', icon: '📋' },
@@ -71,6 +72,7 @@ export default function AdminOrders() {
 
   return (
     <div>
+      <RoleBanner />
       <PageHeader
         icon="📋"
         title="Order Management"
