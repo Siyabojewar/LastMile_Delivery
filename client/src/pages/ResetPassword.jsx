@@ -112,9 +112,9 @@ export default function ResetPassword() {
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
     
-    if (score <= 2) return { score, text: 'Weak', color: 'text-error-600 dark:text-error-400' };
-    if (score <= 4) return { score, text: 'Fair', color: 'text-warning-600 dark:text-warning-400' };
-    return { score, text: 'Strong', color: 'text-success-600 dark:text-success-400' };
+    if (score <= 2) return { score, text: 'Weak',   color: 'text-red-600' };
+    if (score <= 4) return { score, text: 'Fair',   color: 'text-amber-600' };
+    return           { score, text: 'Strong', color: 'text-emerald-600' };
   };
 
   const passwordStrength = getPasswordStrength();
@@ -152,15 +152,15 @@ export default function ResetPassword() {
 
           {success ? (
             <div className="text-center">
-              <div className="w-14 h-14 rounded-full bg-success-100 dark:bg-success-900/30 
+              <div className="w-14 h-14 rounded-full bg-emerald-100 
                               flex items-center justify-center mx-auto mb-6 
-                              text-success-600 dark:text-success-400 text-2xl">
+                              text-emerald-600 text-2xl">
                 ✓
               </div>
-              <h3 className="text-xl font-bold text-text-primary dark:text-text-dark-primary mb-3">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
                 Password updated!
               </h3>
-              <p className="text-text-secondary dark:text-text-dark-secondary mb-6">
+              <p className="text-gray-600 mb-6">
                 Your password has been successfully updated. You will be redirected to the login page.
               </p>
               <Link 
@@ -180,37 +180,34 @@ export default function ResetPassword() {
                 hint="Choose a strong password with at least 6 characters"
               >
                 <PasswordInput
+                  id="password"
                   autoComplete="new-password"
                   placeholder="••••••••"
                   value={password}
                   onChange={e => handlePasswordChange(e.target.value)}
                   error={Boolean(fieldErrors.password)}
                 />
-                {password && passwordStrength.score > 0 && (
-                  <div className="mt-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs text-text-tertiary dark:text-text-dark-tertiary">
-                        Password strength:
-                      </span>
-                      <span className={`text-xs font-medium ${passwordStrength.color}`}>
-                        {passwordStrength.text}
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-surface-tertiary dark:bg-surface-dark-tertiary rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full transition-all duration-300 ${
-                          passwordStrength.score <= 2 
-                            ? 'bg-error-500' 
-                            : passwordStrength.score <= 4 
-                              ? 'bg-warning-500' 
-                              : 'bg-success-500'
-                        }`}
-                        style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
               </FormField>
+              {password && passwordStrength.score > 0 && (
+                <div className="-mt-4">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-xs text-gray-500">Password strength:</span>
+                    <span className={`text-xs font-semibold ${passwordStrength.color}`}>
+                      {passwordStrength.text}
+                    </span>
+                  </div>
+                  <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-300 rounded-full ${
+                        passwordStrength.score <= 2 ? 'bg-red-500'
+                        : passwordStrength.score <= 4 ? 'bg-amber-500'
+                        : 'bg-emerald-500'
+                      }`}
+                      style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              )}
 
               <FormField
                 id="confirmPassword"
@@ -220,6 +217,7 @@ export default function ResetPassword() {
                 success={confirmPassword && !fieldErrors.confirmPassword ? "Passwords match" : undefined}
               >
                 <PasswordInput
+                  id="confirmPassword"
                   autoComplete="new-password"
                   placeholder="••••••••"
                   value={confirmPassword}
@@ -251,7 +249,7 @@ export default function ResetPassword() {
             </form>
           )}
 
-          <div className="mt-6 pt-6 border-t border-border-light dark:border-border-dark text-center">
+          <div className="mt-6 pt-6 border-t border-gray-200 text-center">
             <Link to="/login" className="btn-ghost inline-flex items-center gap-2">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

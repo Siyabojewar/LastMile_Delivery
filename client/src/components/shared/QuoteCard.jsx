@@ -16,9 +16,9 @@ export default function QuoteCard({ quote, onConfirm, loading }) {
   ];
 
   return (
-    <div className="rounded-3xl border-2 border-brand-200 overflow-hidden shadow-card-lg animate-slide-up">
+    <div className="rounded-3xl border-2 border-blue-200 overflow-hidden shadow-lg animate-slide-up">
       {/* ── Header ───────────────────────────────────────────────── */}
-      <div className="bg-hero-gradient px-6 py-5 flex items-center justify-between">
+      <div className="bg-gradient-to-br from-blue-700 to-indigo-800 px-6 py-5 flex items-center justify-between">
         <div>
           <p className="text-blue-200 text-xs font-bold uppercase tracking-widest mb-0.5">
             Your Instant Quote
@@ -49,9 +49,9 @@ export default function QuoteCard({ quote, onConfirm, loading }) {
         ))}
 
         {/* Total row */}
-        <div className="flex items-center justify-between pt-3 mt-1 border-t-2 border-brand-100">
+        <div className="flex items-center justify-between pt-3 mt-1 border-t-2 border-blue-100">
           <span className="font-bold text-gray-800 text-base">Total Charge</span>
-          <span className="text-2xl font-extrabold text-brand-700 tracking-tight">
+          <span className="text-2xl font-extrabold text-blue-700 tracking-tight">
             ₹{Number(quote.totalCharge).toFixed(2)}
           </span>
         </div>
@@ -62,7 +62,7 @@ export default function QuoteCard({ quote, onConfirm, loading }) {
         <button
           onClick={onConfirm}
           disabled={loading}
-          className="btn-primary w-full h-12 text-base btn-lg shadow-card-md justify-center"
+          className="btn-primary w-full h-12 text-base btn-lg shadow-md justify-center"
         >
           {loading ? (
             <><span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />Placing order…</>

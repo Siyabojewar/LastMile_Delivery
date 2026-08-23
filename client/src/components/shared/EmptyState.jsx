@@ -16,8 +16,7 @@ export default function EmptyState({ icon = '📭', title, description, action, 
     <div className={`flex flex-col items-center justify-center text-center
       ${compact ? 'py-10 px-4' : 'py-16 px-6'}`}>
       {/* Icon in a tinted circle */}
-      <div className="w-20 h-20 rounded-3xl bg-surface-100 flex items-center justify-center
-                      text-4xl mb-5 shadow-card ring-1 ring-surface-200 select-none">
+      <div className="w-20 h-20 rounded-3xl bg-gray-100 flex items-center justify-center text-4xl mb-5 shadow-sm ring-1 ring-gray-200 select-none">
         {icon}
       </div>
 
@@ -29,18 +28,18 @@ export default function EmptyState({ icon = '📭', title, description, action, 
       )}
 
       {action && (
-        <div className="animate-scale-in">
+        <div className="animate-fade-in">
           {action.href ? (
             <Link
               to={action.href}
-              className="btn-primary btn-lg shadow-card-md hover:shadow-card-lg"
+              className="btn-primary btn-lg shadow-md hover:shadow-lg"
             >
               {action.label}
             </Link>
           ) : (
             <button
               onClick={action.onClick}
-              className="btn-primary btn-lg shadow-card-md hover:shadow-card-lg"
+              className="btn-primary btn-lg shadow-md hover:shadow-lg"
             >
               {action.label}
             </button>

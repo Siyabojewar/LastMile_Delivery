@@ -17,7 +17,7 @@ function useMsg() {
 function ActivePill({ isActive }) {
   return (
     <span className={`inline-flex items-center gap-1 text-xs font-bold rounded-full px-2.5 py-0.5 ring-1
-      ${isActive ? 'bg-emerald-100 text-emerald-700 ring-emerald-200' : 'bg-surface-100 text-gray-500 ring-surface-200'}`}>
+      ${isActive ? 'bg-emerald-100 text-emerald-700 ring-emerald-200' : 'bg-gray-100 text-gray-500 ring-surface-200'}`}>
       <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
       {isActive ? 'Active' : 'Inactive'}
     </span>
@@ -72,11 +72,11 @@ function RateCardForm({ editing, onSubmit, onCancel, working }) {
         </div>
       </div>
       {example && (
-        <div className="flex items-center gap-2 bg-brand-50 border border-brand-200 rounded-2xl
-                        px-4 py-2.5 text-sm text-brand-700 shadow-card animate-scale-in">
+        <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-2xl
+                        px-4 py-2.5 text-sm text-blue-700 shadow-sm animate-fade-in">
           <span>💡</span>
           <span>5 kg shipment → <strong>₹{example}</strong>
-            <span className="text-brand-400 ml-1 text-xs">(₹{parseFloat(form.baseRate).toFixed(2)} + 5 × ₹{parseFloat(form.ratePerKg).toFixed(2)})</span>
+            <span className="text-blue-400 ml-1 text-xs">(₹{parseFloat(form.baseRate).toFixed(2)} + 5 × ₹{parseFloat(form.ratePerKg).toFixed(2)})</span>
           </span>
         </div>
       )}
@@ -141,7 +141,7 @@ function CodRuleForm({ editing, onSubmit, onCancel, working }) {
       </div>
       {exSurcharge && (
         <div className="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-2xl
-                        px-4 py-2.5 text-sm text-orange-700 shadow-card animate-scale-in">
+                        px-4 py-2.5 text-sm text-orange-700 shadow-sm animate-fade-in">
           <span>💡</span>
           <span>On a ₹300 order, COD surcharge = <strong>₹{exSurcharge}</strong></span>
         </div>
@@ -203,7 +203,7 @@ export default function AdminRateCards() {
 
       {/* Pricing formula callout */}
       <div className="mb-6 flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-2xl
-                      px-5 py-4 shadow-card animate-fade-in">
+                      px-5 py-4 shadow-sm animate-fade-in">
         <span className="text-xl shrink-0 mt-0.5">ℹ</span>
         <div className="text-sm text-blue-800 space-y-1">
           <p className="font-bold">How pricing works</p>
@@ -220,8 +220,8 @@ export default function AdminRateCards() {
       <div className="mb-3"><p className="section-title"><span>1️⃣</span> Add / Edit Rules</p></div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
         <div className="card-form">
-          <div className="flex items-center gap-2 mb-5 pb-3 border-b border-brand-100">
-            <span className="w-7 h-7 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-sm shrink-0 ring-1 ring-brand-200">📊</span>
+          <div className="flex items-center gap-2 mb-5 pb-3 border-b border-blue-100">
+            <span className="w-7 h-7 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-sm shrink-0 ring-1 ring-blue-200">📊</span>
             <h2 className="font-bold text-gray-800">{editingCard ? 'Editing Rate Card' : 'Add Rate Card'}</h2>
           </div>
           <RateCardForm editing={editingCard} onSubmit={handleCardSubmit} onCancel={() => setEditingCard(null)} working={cardWorking} />
@@ -237,11 +237,11 @@ export default function AdminRateCards() {
 
       {/* Rate cards table */}
       <div className="mb-3"><p className="section-title"><span>2️⃣</span> Current Rate Cards</p></div>
-      <div className="card mb-6 shadow-card-md">
+      <div className="card mb-6 shadow-md">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold text-gray-800 flex items-center gap-2">
             📊 Rate Cards
-            <span className="text-xs font-semibold text-gray-400 bg-surface-100 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">{cards.length}</span>
+            <span className="text-xs font-semibold text-gray-400 bg-gray-100 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">{cards.length}</span>
           </h2>
         </div>
         {cards.length === 0 ? (
@@ -258,14 +258,14 @@ export default function AdminRateCards() {
                   const ex = (parseFloat(c.baseRate) + 5 * parseFloat(c.ratePerKg)).toFixed(2);
                   return (
                     <tr key={c.id} className={`table-row ${idx % 2 === 1 ? 'table-row-even' : ''}`}>
-                      <td className="table-td"><span className="text-xs font-bold bg-surface-100 text-gray-700 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">{c.orderType}</span></td>
+                      <td className="table-td"><span className="text-xs font-bold bg-gray-100 text-gray-700 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">{c.orderType}</span></td>
                       <td className="table-td"><ZonePill relation={c.zoneRelation} /></td>
                       <td className="table-td font-bold text-gray-700">₹{Number(c.baseRate).toFixed(2)}</td>
                       <td className="table-td text-gray-600">₹{Number(c.ratePerKg).toFixed(2)}</td>
-                      <td className="table-td"><span className="font-bold text-brand-700">₹{ex}</span></td>
+                      <td className="table-td"><span className="font-bold text-blue-700">₹{ex}</span></td>
                       <td className="table-td text-xs text-gray-500">{c.effectiveFrom ? new Date(c.effectiveFrom).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</td>
                       <td className="table-td"><ActivePill isActive={c.isActive} /></td>
-                      <td className="table-td text-right"><button onClick={() => setEditingCard(c)} className="text-xs font-bold text-brand-600 hover:underline">Edit</button></td>
+                      <td className="table-td text-right"><button onClick={() => setEditingCard(c)} className="text-xs font-bold text-blue-600 hover:underline">Edit</button></td>
                     </tr>
                   );
                 })}
@@ -277,11 +277,11 @@ export default function AdminRateCards() {
 
       {/* COD rules table */}
       <div className="mb-3"><p className="section-title"><span>3️⃣</span> COD Surcharge Rules</p></div>
-      <div className="card shadow-card-md">
+      <div className="card shadow-md">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold text-gray-800 flex items-center gap-2">
             💵 COD Rules
-            <span className="text-xs font-semibold text-gray-400 bg-surface-100 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">{codRules.length}</span>
+            <span className="text-xs font-semibold text-gray-400 bg-gray-100 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">{codRules.length}</span>
           </h2>
         </div>
         {codRules.length === 0 ? (
@@ -298,12 +298,12 @@ export default function AdminRateCards() {
                   const sur = r.surchargeType === 'flat' ? Number(r.value).toFixed(2) : ((parseFloat(r.value)/100)*300).toFixed(2);
                   return (
                     <tr key={r.id} className={`table-row ${idx % 2 === 1 ? 'table-row-even' : ''}`}>
-                      <td className="table-td"><span className="text-xs font-bold bg-surface-100 text-gray-700 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">{r.orderType}</span></td>
+                      <td className="table-td"><span className="text-xs font-bold bg-gray-100 text-gray-700 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">{r.orderType}</span></td>
                       <td className="table-td"><span className={`text-xs font-bold rounded-full px-2.5 py-0.5 ring-1 ${r.surchargeType === 'flat' ? 'bg-purple-100 text-purple-700 ring-purple-200' : 'bg-teal-100 text-teal-700 ring-teal-200'}`}>{r.surchargeType === 'flat' ? '₹ Flat' : '% Percent'}</span></td>
                       <td className="table-td font-bold text-gray-700">{r.surchargeType === 'flat' ? `₹${Number(r.value).toFixed(2)}` : `${Number(r.value)}%`}</td>
                       <td className="table-td"><span className="font-bold text-orange-700">+₹{sur}</span></td>
                       <td className="table-td"><ActivePill isActive={r.isActive} /></td>
-                      <td className="table-td text-right"><button onClick={() => setEditingCod(r)} className="text-xs font-bold text-brand-600 hover:underline">Edit</button></td>
+                      <td className="table-td text-right"><button onClick={() => setEditingCod(r)} className="text-xs font-bold text-blue-600 hover:underline">Edit</button></td>
                     </tr>
                   );
                 })}

@@ -139,20 +139,7 @@ export default function Landing() {
             </div>
           )}
 
-          {/* Stats strip */}
-          <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-8 max-w-2xl mx-auto">
-            {[
-              { v: '50K+', l: 'Deliveries' },
-              { v: '1,200+', l: 'Active agents' },
-              { v: '99.2%', l: 'Success rate' },
-              { v: '4.8 ★', l: 'Avg. rating' },
-            ].map((s) => (
-              <div key={s.l} className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-white">{s.v}</div>
-                <div className="text-sm text-blue-300 mt-1">{s.l}</div>
-              </div>
-            ))}
-          </div>
+
         </div>
       </section>
 

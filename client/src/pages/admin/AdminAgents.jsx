@@ -27,7 +27,7 @@ function AgentAvatar({ name, size = 'md' }) {
   const sz = size === 'lg' ? 'w-12 h-12 text-base' : 'w-9 h-9 text-sm';
   return (
     <div className={`${sz} rounded-full bg-amber-200 text-amber-800 flex items-center justify-center
-                     font-extrabold shrink-0 select-none ring-2 ring-amber-300 shadow-card`}>
+                     font-extrabold shrink-0 select-none ring-2 ring-amber-300 shadow-sm`}>
       {initials}
     </div>
   );
@@ -87,7 +87,7 @@ function CreateAgentForm({ zones, onCreated, working, setWorking, showMsg }) {
         </select>
         {zones.length === 0 && <p className="field-hint text-amber-600">⚠ No zones yet — create zones first.</p>}
       </div>
-      <button type="button" className="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1"
+      <button type="button" className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
         onClick={() => setShowCoords(v => !v)}>
         {showCoords ? '▲ Hide' : '▶ Set'} GPS coordinates (optional)
       </button>
@@ -117,7 +117,7 @@ function AgentCard({ agent, onToggle, toggling }) {
   const { user, currentZone, isAvailable, currentLat, currentLng, lastLocationUpdate } = agent;
   const hasCoords = currentLat != null && currentLng != null;
   return (
-    <div className="card-sm flex items-start gap-3 hover:shadow-card-md transition-shadow duration-200">
+    <div className="card-sm flex items-start gap-3 hover:shadow-md transition-shadow duration-200">
       <AgentAvatar name={user?.name} size="lg" />
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 flex-wrap">
@@ -130,8 +130,8 @@ function AgentCard({ agent, onToggle, toggling }) {
         </div>
         <div className="flex flex-wrap items-center gap-2 mt-2.5">
           {currentZone ? (
-            <span className="inline-flex items-center gap-1.5 text-xs bg-brand-50 text-brand-700
-                             rounded-full px-2.5 py-0.5 font-semibold ring-1 ring-brand-200">
+            <span className="inline-flex items-center gap-1.5 text-xs bg-blue-50 text-blue-700
+                             rounded-full px-2.5 py-0.5 font-semibold ring-1 ring-blue-200">
               🗺 {currentZone.name}
             </span>
           ) : (
@@ -205,7 +205,7 @@ export default function AdminAgents() {
       {agents.length > 0 && (
         <div className="grid grid-cols-3 gap-4 mb-6">
           {[
-            { label: 'Total Agents',  value: agents.length,  bg: 'bg-surface-100 border-surface-200', txt: 'text-gray-700' },
+            { label: 'Total Agents',  value: agents.length,  bg: 'bg-gray-100 border-surface-200', txt: 'text-gray-700' },
             { label: 'Available',     value: availCount,     bg: 'bg-emerald-50 border-emerald-200',  txt: 'text-emerald-700' },
             { label: 'Busy / Assigned', value: busyCount,   bg: 'bg-red-50 border-red-200',          txt: 'text-red-700' },
           ].map(s => (
@@ -221,7 +221,7 @@ export default function AdminAgents() {
         {/* Create form */}
         <div className="lg:col-span-2">
           <div className="card-form sticky top-20">
-            <div className="flex items-center gap-2 mb-5 pb-3 border-b border-brand-100">
+            <div className="flex items-center gap-2 mb-5 pb-3 border-b border-blue-100">
               <span className="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-sm shrink-0 ring-1 ring-amber-200">➕</span>
               <h2 className="font-bold text-gray-800">Create Agent Account</h2>
             </div>
@@ -241,11 +241,11 @@ export default function AdminAgents() {
               <input className="search-input pl-9 text-sm" placeholder="Search agents by name, email or zone…"
                 value={search} onChange={e => setSearch(e.target.value)} />
             </div>
-            <div className="flex rounded-xl border border-surface-200 overflow-hidden text-sm shadow-card">
+            <div className="flex rounded-xl border border-surface-200 overflow-hidden text-sm shadow-sm">
               {[{ key: 'all', label: 'All' }, { key: 'available', label: '✓ Available' }, { key: 'busy', label: '✗ Busy' }].map(f => (
                 <button key={f.key} onClick={() => setFilterAvail(f.key)}
                   className={`px-3 py-1.5 font-semibold transition-colors ${
-                    filterAvail === f.key ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 hover:bg-surface-50'
+                    filterAvail === f.key ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-surface-50'
                   }`}>
                   {f.label}
                 </button>
@@ -265,7 +265,7 @@ export default function AdminAgents() {
             <div className="card-sm text-center py-10">
               <p className="text-sm text-gray-400">No agents match your search or filter.</p>
               <button onClick={() => { setSearch(''); setFilterAvail('all'); }}
-                className="mt-3 text-xs font-bold text-brand-600 hover:underline">Clear filters</button>
+                className="mt-3 text-xs font-bold text-blue-600 hover:underline">Clear filters</button>
             </div>
           ) : (
             <div className="space-y-3">

@@ -84,17 +84,17 @@ export default function ForgotPassword() {
 
           {success ? (
             <div className="text-center">
-              <div className="w-14 h-14 rounded-full bg-success-100 dark:bg-success-900/30 
+              <div className="w-14 h-14 rounded-full bg-emerald-100 
                               flex items-center justify-center mx-auto mb-6 
-                              text-success-600 dark:text-success-400 text-2xl">
+                              text-emerald-600 text-2xl">
                 ✓
               </div>
-              <h3 className="text-xl font-bold text-text-primary dark:text-text-dark-primary mb-3">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
                 Check your email
               </h3>
-              <p className="text-text-secondary dark:text-text-dark-secondary mb-6">
+              <p className="text-gray-600 mb-6">
                 We've sent password reset instructions to:<br/>
-                <span className="font-semibold text-text-primary dark:text-text-dark-primary">{email}</span>
+                <span className="font-semibold text-gray-900">{email}</span>
               </p>
               
               <Alert
@@ -157,7 +157,7 @@ export default function ForgotPassword() {
             </form>
           )}
 
-          <div className="mt-6 pt-6 border-t border-border-light dark:border-border-dark">
+          <div className="mt-6 pt-6 border-t border-gray-200">
             <div className="text-center">
               <Link to="/login" className="btn-ghost inline-flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

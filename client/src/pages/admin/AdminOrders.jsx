@@ -78,12 +78,12 @@ export default function AdminOrders() {
       />
 
       {/* Filter & Search Bar */}
-      <div className="mb-6 p-4 bg-surface-primary dark:bg-surface-dark-primary rounded-2xl 
-                      border border-border-light dark:border-border-dark shadow-card-sm">
+      <div className="mb-6 p-4 bg-white rounded-2xl 
+                      border border-gray-200 shadow-sm">
         <div className="flex flex-wrap items-center gap-4">
           {/* Status Filter */}
           <div className="flex items-center gap-3 flex-1 min-w-[250px]">
-            <span className="text-sm font-medium text-text-secondary dark:text-text-dark-secondary shrink-0">
+            <span className="text-sm font-medium text-gray-600 shrink-0">
               Filter:
             </span>
             <select
@@ -103,10 +103,10 @@ export default function AdminOrders() {
           {filter.status && (
             <button
               onClick={clearFilter}
-              className="flex items-center gap-2 text-sm font-medium bg-brand-50 dark:bg-brand-900/20 
-                         text-brand-700 dark:text-brand-300 rounded-xl px-3 py-2 
-                         hover:bg-brand-100 dark:hover:bg-brand-900/30 transition-colors 
-                         ring-1 ring-brand-200 dark:ring-brand-700"
+              className="flex items-center gap-2 text-sm font-medium bg-blue-50 
+                         text-blue-700 rounded-xl px-3 py-2 
+                         hover:bg-blue-100 transition-colors 
+                         ring-1 ring-blue-200"
             >
               <span>{activeStatus?.icon}</span>
               <span>{activeStatus?.label}</span>
@@ -115,7 +115,7 @@ export default function AdminOrders() {
           )}
 
           {/* Results count */}
-          <div className="ml-auto text-sm text-text-secondary dark:text-text-dark-secondary">
+          <div className="ml-auto text-sm text-gray-600">
             {!loading && (
               <span className="font-medium">
                 {total.toLocaleString()} {total === 1 ? 'order' : 'orders'}
@@ -132,7 +132,7 @@ export default function AdminOrders() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3, 4, 5].map(i => (
-            <div key={i} className="h-16 bg-surface-secondary dark:bg-surface-dark-secondary rounded-xl animate-pulse"></div>
+            <div key={i} className="h-16 bg-gray-50 rounded-xl animate-pulse"></div>
           ))}
         </div>
       ) : orders.length === 0 ? (
@@ -151,31 +151,31 @@ export default function AdminOrders() {
       ) : (
         <>
           {/* Modern Table */}
-          <div className="bg-surface-primary dark:bg-surface-dark-primary rounded-2xl border border-border-light dark:border-border-dark shadow-card-md overflow-hidden">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-surface-secondary dark:bg-surface-dark-secondary border-b border-border-light dark:border-border-dark">
+                  <tr className="bg-gray-50 border-b border-gray-200">
                     {['Order', 'Customer', 'Route', 'Type & Payment', 'Amount', 'Status', 'Agent', 'Actions'].map(header => (
-                      <th key={header} className="px-4 py-3 text-left text-xs font-bold text-text-secondary dark:text-text-dark-secondary uppercase tracking-wider">
+                      <th key={header} className="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
                         {header}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border-light dark:divide-border-dark">
+                <tbody className="divide-y divide-gray-200">
                   {orders.map((order, idx) => (
                     <tr 
                       key={order.id} 
-                      className="hover:bg-surface-secondary dark:hover:bg-surface-dark-secondary transition-colors duration-150"
+                      className="hover:bg-gray-50 transition-colors duration-150"
                     >
                       {/* Order ID & Date */}
                       <td className="px-4 py-4">
                         <div>
-                          <div className="font-mono text-sm font-bold text-text-primary dark:text-text-dark-primary">
+                          <div className="font-mono text-sm font-bold text-gray-900">
                             #{order.id.slice(-8).toUpperCase()}
                           </div>
-                          <div className="text-xs text-text-tertiary dark:text-text-dark-tertiary mt-0.5">
+                          <div className="text-xs text-gray-500 mt-0.5">
                             {new Date(order.createdAt).toLocaleDateString('en-IN', { 
                               day: 'numeric', 
                               month: 'short',
@@ -188,10 +188,10 @@ export default function AdminOrders() {
                       {/* Customer */}
                       <td className="px-4 py-4">
                         <div>
-                          <div className="font-semibold text-text-primary dark:text-text-dark-primary text-sm">
+                          <div className="font-semibold text-gray-900 text-sm">
                             {order.customer?.name || '—'}
                           </div>
-                          <div className="text-xs text-text-tertiary dark:text-text-dark-tertiary truncate max-w-[150px]">
+                          <div className="text-xs text-gray-500 truncate max-w-[150px]">
                             {order.customer?.email || '—'}
                           </div>
                         </div>
@@ -201,20 +201,20 @@ export default function AdminOrders() {
                       <td className="px-4 py-4">
                         <div className="text-sm space-y-1">
                           <div className="flex items-center gap-1">
-                            <span className="text-xs text-text-tertiary dark:text-text-dark-tertiary">From</span>
-                            <span className="font-mono text-text-secondary dark:text-text-dark-secondary">
+                            <span className="text-xs text-gray-500">From</span>
+                            <span className="font-mono text-gray-600">
                               {order.pickupPincode}
                             </span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <span className="text-xs text-text-tertiary dark:text-text-dark-tertiary">To</span>
-                            <span className="font-mono font-medium text-text-primary dark:text-text-dark-primary">
+                            <span className="text-xs text-gray-500">To</span>
+                            <span className="font-mono font-medium text-gray-900">
                               {order.dropPincode}
                             </span>
                           </div>
                           {order.dropZone && (
-                            <div className="inline-flex items-center gap-1 text-xs bg-info-50 dark:bg-info-900/20 
-                                           text-info-700 dark:text-info-300 rounded-md px-2 py-0.5 font-medium">
+                            <div className="inline-flex items-center gap-1 text-xs bg-blue-50 
+                                           text-blue-700 rounded-md px-2 py-0.5 font-medium">
                               🗺 {order.dropZone.name}
                             </div>
                           )}
@@ -225,15 +225,15 @@ export default function AdminOrders() {
                       <td className="px-4 py-4">
                         <div className="flex flex-col gap-1.5">
                           <span className="inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-md 
-                                         bg-surface-secondary dark:bg-surface-dark-secondary 
-                                         text-text-secondary dark:text-text-dark-secondary 
-                                         ring-1 ring-border-light dark:ring-border-dark w-fit">
+                                         bg-gray-50 
+                                         text-gray-600 
+                                         ring-1 ring-gray-200 w-fit">
                             {order.orderType}
                           </span>
                           <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-md ring-1 w-fit ${
                             order.paymentType === 'COD'
-                              ? 'bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-300 ring-warning-200 dark:ring-warning-700'
-                              : 'bg-info-50 dark:bg-info-900/20 text-info-700 dark:text-info-300 ring-info-200 dark:ring-info-700'
+                              ? 'bg-amber-50 text-amber-700 ring-amber-200'
+                              : 'bg-blue-50 text-blue-700 ring-blue-200'
                           }`}>
                             {order.paymentType === 'COD' ? '💵' : '💳'} {order.paymentType}
                           </span>
@@ -242,10 +242,10 @@ export default function AdminOrders() {
 
                       {/* Amount */}
                       <td className="px-4 py-4">
-                        <div className="font-bold text-text-primary dark:text-text-dark-primary">
+                        <div className="font-bold text-gray-900">
                           ₹{Number(order.totalCharge).toFixed(2)}
                         </div>
-                        <div className="text-xs text-text-tertiary dark:text-text-dark-tertiary mt-0.5">
+                        <div className="text-xs text-gray-500 mt-0.5">
                           {order.chargeableWeightKg} kg
                         </div>
                       </td>
@@ -259,19 +259,19 @@ export default function AdminOrders() {
                       <td className="px-4 py-4">
                         {order.assignedAgent ? (
                           <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-warning-100 dark:bg-warning-900/30 
-                                           text-warning-700 dark:text-warning-300 flex items-center justify-center 
-                                           text-xs font-bold ring-1 ring-warning-200 dark:ring-warning-700">
+                            <div className="w-8 h-8 rounded-full bg-amber-100 
+                                           text-amber-700 flex items-center justify-center 
+                                           text-xs font-bold ring-1 ring-amber-200">
                               {order.assignedAgent.name?.[0]?.toUpperCase()}
                             </div>
                             <div>
-                              <div className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
+                              <div className="text-sm font-medium text-gray-900">
                                 {order.assignedAgent.name}
                               </div>
                             </div>
                           </div>
                         ) : (
-                          <span className="text-xs text-text-tertiary dark:text-text-dark-tertiary italic">
+                          <span className="text-xs text-gray-500 italic">
                             Unassigned
                           </span>
                         )}
@@ -282,8 +282,8 @@ export default function AdminOrders() {
                         <div className="flex items-center gap-3">
                           <Link 
                             to={`/admin/orders/${order.id}`}
-                            className="text-sm font-medium text-brand-600 dark:text-brand-400 
-                                     hover:text-brand-700 dark:hover:text-brand-300 
+                            className="text-sm font-medium text-blue-600 
+                                     hover:text-blue-700 
                                      hover:underline transition-colors"
                           >
                             View
@@ -292,8 +292,8 @@ export default function AdminOrders() {
                             <button
                               onClick={() => handleAutoAssign(order.id)}
                               disabled={assigning === order.id}
-                              className="text-sm font-medium text-success-600 dark:text-success-400 
-                                       hover:text-success-700 dark:hover:text-success-300 
+                              className="text-sm font-medium text-emerald-600 
+                                       hover:text-emerald-700 
                                        hover:underline disabled:opacity-50 transition-colors"
                             >
                               {assigning === order.id ? 'Assigning...' : 'Auto-assign'}
@@ -318,9 +318,9 @@ export default function AdminOrders() {
               ← Previous
             </button>
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-text-secondary dark:text-text-dark-secondary">
-                Page <strong className="text-text-primary dark:text-text-dark-primary">{filter.page}</strong> of{' '}
-                <strong className="text-text-primary dark:text-text-dark-primary">{totalPages}</strong>
+              <span className="text-gray-600">
+                Page <strong className="text-gray-900">{filter.page}</strong> of{' '}
+                <strong className="text-gray-900">{totalPages}</strong>
               </span>
             </div>
             <button 

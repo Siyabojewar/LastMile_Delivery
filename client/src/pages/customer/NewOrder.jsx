@@ -327,32 +327,26 @@ export default function NewOrder() {
 
           {/* Live preview pill */}
           {vol != null && (
-            <div className="mt-4 p-4 bg-info-50 dark:bg-info-900/20 
-                           border border-info-200 dark:border-info-800 rounded-xl">
-              <div className="flex items-center gap-2 text-info-700 dark:text-info-300 text-sm font-medium">
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+              <div className="flex items-center gap-2 text-blue-700 text-sm font-medium">
                 <span className="text-base">💡</span>
                 <span>Weight Calculation Preview</span>
               </div>
               <div className="mt-2 flex flex-wrap gap-4 text-sm">
                 <div>
-                  <span className="text-text-tertiary dark:text-text-dark-tertiary">Volumetric:</span>
-                  <span className="ml-1 font-semibold text-text-primary dark:text-text-dark-primary">
-                    {vol.toFixed(3)} kg
-                  </span>
+                  <span className="text-gray-500">Volumetric:</span>
+                  <span className="ml-1 font-semibold text-gray-900">{vol.toFixed(3)} kg</span>
                 </div>
                 {chargeable != null && (
                   <>
                     <div>
-                      <span className="text-text-tertiary dark:text-text-dark-tertiary">Chargeable:</span>
-                      <span className="ml-1 font-semibold text-text-primary dark:text-text-dark-primary">
-                        {chargeable.toFixed(3)} kg
-                      </span>
+                      <span className="text-gray-500">Chargeable:</span>
+                      <span className="ml-1 font-semibold text-gray-900">{chargeable.toFixed(3)} kg</span>
                     </div>
                     {chargeable > parseFloat(form.actualWeightKg) && (
-                      <div className="inline-flex items-center gap-1 bg-warning-100 dark:bg-warning-900/30 
-                                     text-warning-700 dark:text-warning-300 rounded-lg px-2 py-1 text-xs font-medium">
+                      <div className="inline-flex items-center gap-1 bg-amber-100 text-amber-700 rounded-lg px-2 py-1 text-xs font-medium">
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
                         </svg>
                         Volumetric weight applies
@@ -457,9 +451,9 @@ export default function NewOrder() {
       {quote && (
         <div id="quote-section" className="mt-8 animate-slide-up">
           <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center gap-3 px-6 py-3 bg-success-50 dark:bg-success-900/20 
-                           text-success-700 dark:text-success-300 rounded-full border border-success-200 
-                           dark:border-success-800 font-medium">
+            <div className="flex items-center gap-3 px-6 py-3 bg-emerald-50 
+                           text-emerald-700 rounded-full border border-emerald-200 
+                           font-medium">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>

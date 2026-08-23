@@ -31,11 +31,11 @@ function StatusStepper({ currentStatus }) {
                 <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs
                                  font-extrabold border-2 transition-all duration-300
                   ${past
-                    ? 'bg-emerald-500 border-emerald-500 text-white shadow-card'
+                    ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm'
                     : current
-                      ? 'bg-brand-600 border-brand-600 text-white ring-4 ring-brand-100 shadow-card-md'
+                      ? 'bg-blue-600 border-blue-600 text-white ring-4 ring-blue-100 shadow-md'
                       : isFailed && i === 0
-                        ? 'bg-red-500 border-red-500 text-white shadow-card'
+                        ? 'bg-red-500 border-red-500 text-white shadow-sm'
                         : 'bg-white border-surface-200 text-gray-300'
                   }`}
                 >
@@ -55,7 +55,7 @@ function StatusStepper({ currentStatus }) {
               {i < STATUS_ORDER.length - 1 && (
                 <div className="flex-1 mt-4 mx-1">
                   <div className={`h-1 rounded-full transition-all duration-300
-                    ${past ? 'bg-emerald-400' : 'bg-surface-200'}`} />
+                    ${past ? 'bg-emerald-400' : 'bg-gray-200'}`} />
                 </div>
               )}
             </React.Fragment>
@@ -65,14 +65,14 @@ function StatusStepper({ currentStatus }) {
 
       {isFailed && (
         <div className="mt-4 flex items-center gap-2.5 bg-red-50 border border-red-200
-                        rounded-2xl px-4 py-3 text-sm text-red-700 shadow-card animate-scale-in">
+                        rounded-2xl px-4 py-3 text-sm text-red-700 shadow-sm animate-fade-in">
           <span className="text-lg shrink-0">❌</span>
           <span>Delivery attempt failed. Please reschedule below.</span>
         </div>
       )}
       {isRescheduled && (
         <div className="mt-4 flex items-center gap-2.5 bg-purple-50 border border-purple-200
-                        rounded-2xl px-4 py-3 text-sm text-purple-700 shadow-card animate-scale-in">
+                        rounded-2xl px-4 py-3 text-sm text-purple-700 shadow-sm animate-fade-in">
           <span className="text-lg shrink-0">🔄</span>
           <span>Order rescheduled — awaiting pickup for the next attempt.</span>
         </div>
@@ -88,7 +88,7 @@ function TimelineEntry({ entry, isLast }) {
     <li className="flex gap-4">
       <div className="flex flex-col items-center">
         <div className={`w-3 h-3 rounded-full shrink-0 mt-0.5 ring-4 ring-white shadow-sm ${dotColor}`} />
-        {!isLast && <div className="w-px flex-1 bg-surface-200 mt-1.5" />}
+        {!isLast && <div className="w-px flex-1 bg-gray-200 mt-1.5" />}
       </div>
       <div className="pb-6 min-w-0">
         <div className="flex flex-wrap items-start gap-2 justify-between">
@@ -108,7 +108,7 @@ function TimelineEntry({ entry, isLast }) {
         <p className="mt-1 text-xs text-gray-400">
           Updated by{' '}
           <span className="font-semibold text-gray-600">{entry.actor?.name}</span>{' '}
-          <span className="capitalize bg-surface-100 rounded-md px-1.5 py-0.5 text-gray-500 font-medium">
+          <span className="capitalize bg-gray-100 rounded-md px-1.5 py-0.5 text-gray-500 font-medium">
             {entry.actor?.role}
           </span>
         </p>
@@ -139,7 +139,7 @@ function ReschedulePanel({ orderId, onRescheduled }) {
   }
 
   return (
-    <div className="card border-red-200 bg-gradient-to-br from-red-50/50 to-white shadow-card-md">
+    <div className="card border-red-200 bg-gradient-to-br from-red-50/50 to-white shadow-md">
       <div className="flex items-center gap-2.5 mb-1">
         <div className="w-8 h-8 rounded-xl bg-red-100 flex items-center justify-center text-base shrink-0">
           📅
@@ -237,11 +237,11 @@ export default function TrackOrder() {
       </PageHeader>
 
       {/* Route summary card */}
-      <div className="card mb-4 shadow-card-md">
+      <div className="card mb-4 shadow-md">
         <div className="flex items-start gap-3">
           <div className="flex flex-col items-center gap-1 pt-1 shrink-0">
             <div className="w-7 h-7 rounded-xl bg-blue-100 flex items-center justify-center text-sm">📍</div>
-            <div className="w-px h-6 bg-surface-200" />
+            <div className="w-px h-6 bg-gray-200" />
             <div className="w-7 h-7 rounded-xl bg-emerald-100 flex items-center justify-center text-sm">🏁</div>
           </div>
           <div className="space-y-2.5 min-w-0 flex-1">
@@ -260,7 +260,7 @@ export default function TrackOrder() {
       </div>
 
       {/* Progress stepper */}
-      <div className="card mb-4 overflow-x-auto shadow-card-md">
+      <div className="card mb-4 overflow-x-auto shadow-md">
         <p className="section-title mb-5">
           <span>🚚</span> Delivery Progress
         </p>

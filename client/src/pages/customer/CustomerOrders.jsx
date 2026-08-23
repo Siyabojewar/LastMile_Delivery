@@ -37,10 +37,10 @@ export default function CustomerOrders() {
       {loading ? (
         <div className="space-y-4">
           <div className="animate-pulse">
-            <div className="h-4 bg-surface-secondary dark:bg-surface-dark-secondary rounded w-32 mb-4"></div>
+            <div className="h-4 bg-gray-50 rounded w-32 mb-4"></div>
             <div className="space-y-3">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-24 bg-surface-secondary dark:bg-surface-dark-secondary rounded-2xl"></div>
+                <div key={i} className="h-24 bg-gray-50 rounded-2xl"></div>
               ))}
             </div>
           </div>
@@ -58,14 +58,14 @@ export default function CustomerOrders() {
           {activeOrders.length > 0 && (
             <section>
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-8 h-8 rounded-xl bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
                   🚚
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-text-primary dark:text-text-dark-primary">
+                  <h2 className="text-xl font-bold text-gray-900">
                     In Progress
                   </h2>
-                  <p className="text-sm text-text-secondary dark:text-text-dark-secondary">
+                  <p className="text-sm text-gray-600">
                     {activeOrders.length} active {activeOrders.length === 1 ? 'delivery' : 'deliveries'}
                   </p>
                 </div>
@@ -86,14 +86,14 @@ export default function CustomerOrders() {
           {completedOrders.length > 0 && (
             <section>
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-8 h-8 rounded-xl bg-success-100 dark:bg-success-900/30 flex items-center justify-center text-success-600 dark:text-success-400">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
                   🏁
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-text-primary dark:text-text-dark-primary">
+                  <h2 className="text-xl font-bold text-gray-900">
                     Completed
                   </h2>
-                  <p className="text-sm text-text-secondary dark:text-text-dark-secondary">
+                  <p className="text-sm text-gray-600">
                     {completedOrders.length} completed {completedOrders.length === 1 ? 'delivery' : 'deliveries'}
                   </p>
                 </div>

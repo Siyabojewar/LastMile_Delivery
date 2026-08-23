@@ -130,8 +130,8 @@ export default function AdminZones() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
         {/* Zone form — tinted card to distinguish from content */}
         <div className="card-form">
-          <div className="flex items-center gap-2 mb-5 pb-3 border-b border-brand-100">
-            <span className="w-7 h-7 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-sm shrink-0 ring-1 ring-brand-200">🏙</span>
+          <div className="flex items-center gap-2 mb-5 pb-3 border-b border-blue-100">
+            <span className="w-7 h-7 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-sm shrink-0 ring-1 ring-blue-200">🏙</span>
             <h2 className="font-bold text-gray-800">{editingZone ? `Editing: ${editingZone.name}` : 'Add New Zone'}</h2>
           </div>
           <ZoneForm editing={editingZone} onSubmit={handleZoneSubmit} onCancel={() => setEditingZone(null)} working={zoneWorking} />
@@ -151,11 +151,11 @@ export default function AdminZones() {
       <div className="mb-3">
         <p className="section-title"><span>2️⃣</span> Existing Zones</p>
       </div>
-      <div className="card mb-6 shadow-card-md">
+      <div className="card mb-6 shadow-md">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold text-gray-800 flex items-center gap-2">
             🏙 Zones
-            <span className="text-xs font-semibold text-gray-400 bg-surface-100 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">
+            <span className="text-xs font-semibold text-gray-400 bg-gray-100 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">
               {zones.length}
             </span>
           </h2>
@@ -171,8 +171,8 @@ export default function AdminZones() {
               <div key={z.id} className="flex items-center justify-between py-3.5 gap-3
                                          hover:bg-surface-50 px-2 -mx-2 rounded-xl transition-colors">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-2xl bg-brand-100 text-brand-700 flex items-center
-                                  justify-center font-extrabold text-sm shrink-0 ring-1 ring-brand-200 shadow-card">
+                  <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center
+                                  justify-center font-extrabold text-sm shrink-0 ring-1 ring-blue-200 shadow-sm">
                     {z.name[0]?.toUpperCase()}
                   </div>
                   <div className="min-w-0">
@@ -181,7 +181,7 @@ export default function AdminZones() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className="text-xs bg-surface-100 text-gray-600 rounded-full px-2.5 py-1
+                  <span className="text-xs bg-gray-100 text-gray-600 rounded-full px-2.5 py-1
                                    font-semibold ring-1 ring-surface-200">
                     {z.pincodes?.length || 0} pincode{z.pincodes?.length !== 1 ? 's' : ''}
                   </span>
@@ -197,11 +197,11 @@ export default function AdminZones() {
       <div className="mb-3">
         <p className="section-title"><span>3️⃣</span> Pincode Mappings</p>
       </div>
-      <div className="card shadow-card-md">
+      <div className="card shadow-md">
         <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
           <h2 className="font-bold text-gray-800 flex items-center gap-2">
             📍 Pincode Mappings
-            <span className="text-xs font-semibold text-gray-400 bg-surface-100 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">
+            <span className="text-xs font-semibold text-gray-400 bg-gray-100 rounded-full px-2.5 py-0.5 ring-1 ring-surface-200">
               {pincodeMap.length}
             </span>
           </h2>
@@ -228,7 +228,7 @@ export default function AdminZones() {
         ) : filteredPins.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-sm text-gray-400">No results for "<strong>{pinSearch}</strong>"</p>
-            <button onClick={() => setPinSearch('')} className="mt-2 text-xs font-semibold text-brand-600 hover:underline">
+            <button onClick={() => setPinSearch('')} className="mt-2 text-xs font-semibold text-blue-600 hover:underline">
               Clear search
             </button>
           </div>
@@ -252,7 +252,7 @@ export default function AdminZones() {
                     </td>
                     <td className="table-td">
                       <span className="inline-flex items-center gap-1.5 text-sm">
-                        <span className="w-2 h-2 rounded-full bg-brand-400 shrink-0" />
+                        <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
                         <span className="font-medium">{p.zone?.name || '—'}</span>
                       </span>
                     </td>

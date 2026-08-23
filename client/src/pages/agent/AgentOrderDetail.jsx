@@ -38,7 +38,7 @@ function TimelineEntry({ entry, isLast }) {
     <li className="flex gap-4">
       <div className="flex flex-col items-center">
         <div className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1 shadow-sm ${dotColor}`} />
-        {!isLast && <div className="w-px flex-1 bg-surface-200 mt-1.5" />}
+        {!isLast && <div className="w-px flex-1 bg-gray-200 mt-1.5" />}
       </div>
       <div className="pb-4 min-w-0">
         <div className="flex flex-wrap items-center gap-2">
@@ -136,7 +136,7 @@ export default function AgentOrderDetail() {
       {/* COD alert */}
       {isCOD && !['Delivered', 'Failed'].includes(order.status) && (
         <div className="mb-4 flex items-center gap-3 bg-orange-50 border border-orange-200
-                        rounded-2xl px-4 py-3.5 shadow-card animate-scale-in">
+                        rounded-2xl px-4 py-3.5 shadow-sm animate-fade-in">
           <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center text-xl shrink-0">
             💵
           </div>
@@ -150,12 +150,12 @@ export default function AgentOrderDetail() {
       )}
 
       {/* Route */}
-      <div className="card mb-4 shadow-card-md">
+      <div className="card mb-4 shadow-md">
         <p className="section-title mb-3"><span>🗺</span> Route</p>
         <div className="flex items-start gap-3">
           <div className="flex flex-col items-center gap-1 pt-0.5 shrink-0">
             <div className="w-7 h-7 rounded-xl bg-blue-100 flex items-center justify-center text-sm">📍</div>
-            <div className="w-px h-6 bg-surface-200" />
+            <div className="w-px h-6 bg-gray-200" />
             <div className="w-7 h-7 rounded-xl bg-emerald-100 flex items-center justify-center text-sm">🏁</div>
           </div>
           <div className="space-y-2.5 min-w-0 flex-1">
@@ -181,8 +181,8 @@ export default function AgentOrderDetail() {
 
       {/* Status update panel */}
       {transitions.length > 0 && (
-        <div className="card mb-4 bg-gradient-to-br from-brand-50/40 to-white
-                        border-brand-200 shadow-card-md">
+        <div className="card mb-4 bg-gradient-to-br from-blue-50/40 to-white
+                        border-blue-200 shadow-md">
           <p className="section-title mb-3"><span>⚡</span> Update Delivery Status</p>
 
           <Alert message={updateError} className="mb-3" />
@@ -217,8 +217,8 @@ export default function AgentOrderDetail() {
 
           {tip && (
             <div className="mt-4 flex items-start gap-2.5 bg-white rounded-xl border border-surface-200
-                            px-3.5 py-2.5 text-xs text-gray-500 shadow-card">
-              <span className="text-brand-500 shrink-0 mt-px font-bold">ℹ</span>
+                            px-3.5 py-2.5 text-xs text-gray-500 shadow-sm">
+              <span className="text-blue-500 shrink-0 mt-px font-bold">ℹ</span>
               {tip}
             </div>
           )}
@@ -227,12 +227,12 @@ export default function AgentOrderDetail() {
 
       {/* Terminal state */}
       {transitions.length === 0 && (
-        <div className={`card mb-4 flex items-center gap-4 shadow-card-md
+        <div className={`card mb-4 flex items-center gap-4 shadow-md
           ${order.status === 'Delivered'
             ? 'bg-gradient-to-br from-emerald-50 to-white border-emerald-200'
             : 'bg-surface-50 border-surface-200'}`}>
           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0
-            ${order.status === 'Delivered' ? 'bg-emerald-100' : 'bg-surface-100'}`}>
+            ${order.status === 'Delivered' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
             {order.status === 'Delivered' ? '🎉' : '🔒'}
           </div>
           <div>

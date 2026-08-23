@@ -131,21 +131,22 @@ export default function Login() {
               error={fieldErrors.password}
             >
               <PasswordInput
+                id="password"
                 autoComplete="current-password"
                 placeholder="••••••••"
                 value={form.password}
                 onChange={e => handleChange('password', e.target.value)}
                 error={Boolean(fieldErrors.password)}
               />
-              <div className="mt-3 text-right">
-                <Link 
-                  to="/forgot-password" 
-                  className="text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
-                >
-                  Forgot password?
-                </Link>
-              </div>
             </FormField>
+            <div className="text-right -mt-4">
+              <Link
+                to="/forgot-password"
+                className="text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
 
             <button 
               type="submit" 

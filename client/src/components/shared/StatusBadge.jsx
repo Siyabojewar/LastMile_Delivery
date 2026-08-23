@@ -2,8 +2,8 @@ import React from 'react';
 import { STATUS_COLORS, STATUS_LABELS, STATUS_DOT_COLORS, STATUS_ICONS } from '../../utils/statusColors';
 
 export default function StatusBadge({ status, size = 'md', showIcon = true, showDot = true }) {
-  const colors = STATUS_COLORS[status] || 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 ring-neutral-200 dark:ring-neutral-600';
-  const dotColor = STATUS_DOT_COLORS[status] || 'bg-neutral-400 dark:bg-neutral-500';
+  const colors = STATUS_COLORS[status] || 'bg-neutral-100 text-neutral-600 ring-neutral-200';
+  const dotColor = STATUS_DOT_COLORS[status] || 'bg-neutral-400';
   const label = STATUS_LABELS[status] || status;
   const icon = STATUS_ICONS[status];
 
@@ -32,7 +32,7 @@ export default function StatusBadge({ status, size = 'md', showIcon = true, show
     `}>
       {showDot && (
         <span 
-          className={`${dotColor} ${dotSizeClasses[size]} rounded-full ring-1 ring-white dark:ring-neutral-800 shadow-sm`}
+          className={`${dotColor} ${dotSizeClasses[size]} rounded-full ring-1 ring-white shadow-sm`}
           aria-hidden="true"
         />
       )}

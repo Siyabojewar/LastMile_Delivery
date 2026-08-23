@@ -36,10 +36,10 @@ export default function AgentOrders() {
       {loading ? (
         <div className="space-y-4">
           <div className="animate-pulse">
-            <div className="h-4 bg-surface-secondary dark:bg-surface-dark-secondary rounded w-32 mb-4"></div>
+            <div className="h-4 bg-gray-50 rounded w-32 mb-4"></div>
             <div className="space-y-3">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-24 bg-surface-secondary dark:bg-surface-dark-secondary rounded-2xl"></div>
+                <div key={i} className="h-24 bg-gray-50 rounded-2xl"></div>
               ))}
             </div>
           </div>
@@ -56,14 +56,14 @@ export default function AgentOrders() {
           {activeOrders.length > 0 && (
             <section>
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-8 h-8 rounded-xl bg-warning-100 dark:bg-warning-900/30 flex items-center justify-center text-warning-600 dark:text-warning-400">
+                <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
                   ⚡
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-text-primary dark:text-text-dark-primary">
+                  <h2 className="text-xl font-bold text-gray-900">
                     Active Deliveries
                   </h2>
-                  <p className="text-sm text-text-secondary dark:text-text-dark-secondary">
+                  <p className="text-sm text-gray-600">
                     {activeOrders.length} {activeOrders.length === 1 ? 'delivery' : 'deliveries'} in progress
                   </p>
                 </div>
@@ -84,14 +84,14 @@ export default function AgentOrders() {
           {completedOrders.length > 0 && (
             <section>
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-8 h-8 rounded-xl bg-success-100 dark:bg-success-900/30 flex items-center justify-center text-success-600 dark:text-success-400">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
                   🏁
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-text-primary dark:text-text-dark-primary">
+                  <h2 className="text-xl font-bold text-gray-900">
                     Completed & Failed
                   </h2>
-                  <p className="text-sm text-text-secondary dark:text-text-dark-secondary">
+                  <p className="text-sm text-gray-600">
                     {completedOrders.length} finished {completedOrders.length === 1 ? 'delivery' : 'deliveries'}
                   </p>
                 </div>
@@ -111,29 +111,29 @@ export default function AgentOrders() {
 
           {/* Quick Stats */}
           {orders.length > 0 && (
-            <div className="mt-8 p-4 bg-surface-secondary dark:bg-surface-dark-secondary rounded-2xl border border-border-light dark:border-border-dark">
+            <div className="mt-8 p-4 bg-gray-50 rounded-2xl border border-gray-200">
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-text-primary dark:text-text-dark-primary">
+                  <div className="text-2xl font-bold text-gray-900">
                     {activeOrders.length}
                   </div>
-                  <div className="text-sm text-text-secondary dark:text-text-dark-secondary">
+                  <div className="text-sm text-gray-600">
                     Active
                   </div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-success-600 dark:text-success-400">
+                  <div className="text-2xl font-bold text-emerald-600">
                     {completedOrders.filter(o => o.status === 'Delivered').length}
                   </div>
-                  <div className="text-sm text-text-secondary dark:text-text-dark-secondary">
+                  <div className="text-sm text-gray-600">
                     Delivered
                   </div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-text-primary dark:text-text-dark-primary">
+                  <div className="text-2xl font-bold text-gray-900">
                     {orders.length}
                   </div>
-                  <div className="text-sm text-text-secondary dark:text-text-dark-secondary">
+                  <div className="text-sm text-gray-600">
                     Total
                   </div>
                 </div>

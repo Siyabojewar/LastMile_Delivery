@@ -105,9 +105,9 @@ export default function Register() {
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
     
-    if (score <= 2) return { score, text: 'Weak', color: 'text-error-600 dark:text-error-400' };
-    if (score <= 4) return { score, text: 'Fair', color: 'text-warning-600 dark:text-warning-400' };
-    return { score, text: 'Strong', color: 'text-success-600 dark:text-success-400' };
+    if (score <= 2) return { score, text: 'Weak',   color: 'text-red-600' };
+    if (score <= 4) return { score, text: 'Fair',   color: 'text-amber-600' };
+    return           { score, text: 'Strong', color: 'text-emerald-600' };
   };
 
   const passwordStrength = getPasswordStrength();
@@ -183,37 +183,34 @@ export default function Register() {
               error={fieldErrors.password}
             >
               <PasswordInput
+                id="password"
                 autoComplete="new-password"
                 placeholder="••••••••"
                 value={form.password}
                 onChange={e => handleChange('password', e.target.value)}
                 error={Boolean(fieldErrors.password)}
               />
-              {form.password && passwordStrength.score > 0 && (
-                <div className="mt-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs text-text-tertiary dark:text-text-dark-tertiary">
-                      Password strength:
-                    </span>
-                    <span className={`text-xs font-medium ${passwordStrength.color}`}>
-                      {passwordStrength.text}
-                    </span>
-                  </div>
-                  <div className="h-1.5 bg-surface-tertiary dark:bg-surface-dark-tertiary rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full transition-all duration-300 ${
-                        passwordStrength.score <= 2 
-                          ? 'bg-error-500' 
-                          : passwordStrength.score <= 4 
-                            ? 'bg-warning-500' 
-                            : 'bg-success-500'
-                      }`}
-                      style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              )}
             </FormField>
+            {form.password && passwordStrength.score > 0 && (
+              <div className="-mt-4">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-xs text-gray-500">Password strength:</span>
+                  <span className={`text-xs font-semibold ${passwordStrength.color}`}>
+                    {passwordStrength.text}
+                  </span>
+                </div>
+                <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-300 rounded-full ${
+                      passwordStrength.score <= 2 ? 'bg-red-500'
+                      : passwordStrength.score <= 4 ? 'bg-amber-500'
+                      : 'bg-emerald-500'
+                    }`}
+                    style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )}
 
             <FormField
               id="phone"
@@ -265,9 +262,9 @@ export default function Register() {
         {/* Features Preview */}
         <div className="mt-6 grid grid-cols-3 gap-3">
           {[
-            { icon: '🧾', label: 'Instant quotes', color: 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' },
-            { icon: '📍', label: 'Live tracking', color: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' },
-            { icon: '🔔', label: 'Email updates', color: 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300' },
+            { icon: '🧾', label: 'Instant quotes', color: 'bg-blue-50 text-blue-700' },
+            { icon: '📍', label: 'Live tracking', color: 'bg-emerald-50 text-emerald-700' },
+            { icon: '🔔', label: 'Email updates', color: 'bg-purple-50 text-purple-700' },
           ].map(feature => (
             <div key={feature.label} className={`
               p-3 rounded-xl border text-center transition-all duration-200

@@ -40,10 +40,10 @@ export default function PasswordInput({
       <button
         type="button"
         className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg
-                   text-text-tertiary dark:text-text-dark-tertiary 
-                   hover:text-text-secondary dark:hover:text-text-dark-secondary 
-                   hover:bg-surface-secondary dark:hover:bg-surface-dark-secondary
-                   focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1
+                   text-gray-500 
+                   hover:text-gray-600 
+                   hover:bg-gray-50
+                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
                    transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={() => setShowPassword(!showPassword)}
         disabled={disabled}

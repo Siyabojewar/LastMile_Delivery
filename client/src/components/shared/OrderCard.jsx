@@ -36,23 +36,23 @@ export default function OrderCard({
       to={linkPath}
       className={`
         group block p-4 rounded-2xl border transition-all duration-200
-        hover:shadow-card-md hover:-translate-y-0.5 hover:border-border-light-strong dark:hover:border-border-dark-strong
-        bg-surface-primary dark:bg-surface-dark-primary
-        border-border-light dark:border-border-dark
-        shadow-card-sm
+        hover:shadow-md hover:-translate-y-0.5 hover:border-gray-400
+        bg-white
+        border-gray-200
+        shadow-sm
         ${statusColorClasses}
       `}
     >
       <div className="flex items-start gap-4">
         {/* Status Icon */}
         <div className={`
-          shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold shadow-card-sm
-          ring-1 ring-border-light dark:ring-border-dark transition-all duration-200
+          shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold shadow-sm
+          ring-1 ring-gray-200 transition-all duration-200
           ${isTerminal 
             ? order.status === 'Delivered' 
-              ? 'bg-success-100 dark:bg-success-900/30 text-success-600 dark:text-success-400'
-              : 'bg-error-100 dark:bg-error-900/30 text-error-600 dark:text-error-400'
-            : 'bg-surface-secondary dark:bg-surface-dark-secondary text-text-secondary dark:text-text-dark-secondary'
+              ? 'bg-emerald-100 text-emerald-600'
+              : 'bg-red-100 text-red-600'
+            : 'bg-gray-50 text-gray-600'
           }
           group-hover:scale-105
         `}>
@@ -65,16 +65,16 @@ export default function OrderCard({
           <div className="flex items-start justify-between gap-3 mb-2">
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <p className="font-mono text-xs font-bold text-text-tertiary dark:text-text-dark-tertiary uppercase tracking-wider">
+                <p className="font-mono text-xs font-bold text-gray-500 uppercase tracking-wider">
                   #{order.id.slice(-8)}
                 </p>
                 {role === 'admin' && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 font-medium">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-medium">
                     Admin
                   </span>
                 )}
               </div>
-              <h3 className="font-semibold text-text-primary dark:text-text-dark-primary text-base leading-tight">
+              <h3 className="font-semibold text-gray-900 text-base leading-tight">
                 {role === 'customer' 
                   ? `${order.pickupAddress?.split(',')[0]} → ${order.dropAddress?.split(',')[0]}`
                   : order.customer?.name || 'Unknown Customer'
@@ -87,24 +87,24 @@ export default function OrderCard({
           {/* Route Information */}
           <div className="space-y-1.5 mb-3">
             <div className="flex items-center gap-2 text-sm">
-              <span className="w-4 h-4 rounded-lg bg-info-100 dark:bg-info-900/30 flex items-center justify-center text-xs">
+              <span className="w-4 h-4 rounded-lg bg-blue-100 flex items-center justify-center text-xs">
                 📍
               </span>
-              <span className="text-text-secondary dark:text-text-dark-secondary truncate">
+              <span className="text-gray-600 truncate">
                 {order.pickupAddress}
               </span>
-              <span className="font-mono text-xs text-text-tertiary dark:text-text-dark-tertiary">
+              <span className="font-mono text-xs text-gray-500">
                 {order.pickupPincode}
               </span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <span className="w-4 h-4 rounded-lg bg-success-100 dark:bg-success-900/30 flex items-center justify-center text-xs">
+              <span className="w-4 h-4 rounded-lg bg-emerald-100 flex items-center justify-center text-xs">
                 🏁
               </span>
-              <span className="text-text-primary dark:text-text-dark-primary font-medium truncate">
+              <span className="text-gray-900 font-medium truncate">
                 {order.dropAddress}
               </span>
-              <span className="font-mono text-xs text-text-tertiary dark:text-text-dark-tertiary">
+              <span className="font-mono text-xs text-gray-500">
                 {order.dropPincode}
               </span>
             </div>
@@ -114,38 +114,38 @@ export default function OrderCard({
           <div className="flex flex-wrap items-center gap-2 mb-2">
             {/* Order Type */}
             <span className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full 
-                           bg-surface-secondary dark:bg-surface-dark-secondary 
-                           text-text-secondary dark:text-text-dark-secondary 
-                           ring-1 ring-border-light dark:ring-border-dark">
+                           bg-gray-50 
+                           text-gray-600 
+                           ring-1 ring-gray-200">
               {order.orderType}
             </span>
 
             {/* Payment Type */}
             <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ring-1 ${
               isCOD
-                ? 'bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-300 ring-warning-200 dark:ring-warning-700'
-                : 'bg-info-50 dark:bg-info-900/20 text-info-700 dark:text-info-300 ring-info-200 dark:ring-info-700'
+                ? 'bg-amber-50 text-amber-700 ring-amber-200'
+                : 'bg-blue-50 text-blue-700 ring-blue-200'
             }`}>
               {isCOD ? '💵' : '💳'} {order.paymentType}
             </span>
 
             {/* Total Charge */}
-            <span className="text-sm font-bold text-text-primary dark:text-text-dark-primary">
+            <span className="text-sm font-bold text-gray-900">
               ₹{Number(order.totalCharge).toFixed(2)}
             </span>
 
             {/* Weight */}
-            <span className="text-xs text-text-tertiary dark:text-text-dark-tertiary">
+            <span className="text-xs text-gray-500">
               {order.chargeableWeightKg} kg
             </span>
           </div>
 
           {/* COD Collection Alert for Agents */}
           {isCOD && role === 'agent' && !isTerminal && (
-            <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-warning-50 dark:bg-warning-900/20 
-                           border border-warning-200 dark:border-warning-700 rounded-xl">
-              <span className="text-warning-600 dark:text-warning-400 text-sm font-bold">💵</span>
-              <span className="text-sm font-medium text-warning-700 dark:text-warning-300">
+            <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-amber-50 
+                           border border-amber-200 rounded-xl">
+              <span className="text-amber-600 text-sm font-bold">💵</span>
+              <span className="text-sm font-medium text-amber-700">
                 Collect ₹{Number(order.totalCharge).toFixed(2)} cash
               </span>
             </div>
@@ -155,20 +155,20 @@ export default function OrderCard({
           {role === 'admin' && (
             <div className="mt-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-text-tertiary dark:text-text-dark-tertiary">Agent:</span>
+                <span className="text-xs text-gray-500">Agent:</span>
                 {order.assignedAgent ? (
                   <div className="flex items-center gap-1.5">
-                    <div className="w-6 h-6 rounded-full bg-warning-100 dark:bg-warning-900/30 
-                                   text-warning-700 dark:text-warning-300 flex items-center justify-center 
+                    <div className="w-6 h-6 rounded-full bg-amber-100 
+                                   text-amber-700 flex items-center justify-center 
                                    text-xs font-bold">
                       {order.assignedAgent.name?.[0]?.toUpperCase()}
                     </div>
-                    <span className="text-sm font-medium text-text-secondary dark:text-text-dark-secondary">
+                    <span className="text-sm font-medium text-gray-600">
                       {order.assignedAgent.name}
                     </span>
                   </div>
                 ) : (
-                  <span className="text-xs text-text-tertiary dark:text-text-dark-tertiary italic">
+                  <span className="text-xs text-gray-500 italic">
                     Unassigned
                   </span>
                 )}
@@ -181,8 +181,8 @@ export default function OrderCard({
                     onAction(order.id);
                   }}
                   disabled={actionLoading === order.id}
-                  className="text-xs font-semibold text-success-600 dark:text-success-400 
-                           hover:text-success-700 dark:hover:text-success-300 
+                  className="text-xs font-semibold text-emerald-600 
+                           hover:text-emerald-700 
                            hover:underline disabled:opacity-50 transition-colors"
                 >
                   {actionLoading === order.id ? 'Assigning...' : '⚡ Auto-assign'}
@@ -193,7 +193,7 @@ export default function OrderCard({
 
           {/* Date */}
           <div className="mt-3 flex items-center justify-between">
-            <span className="text-xs text-text-tertiary dark:text-text-dark-tertiary">
+            <span className="text-xs text-gray-500">
               {isTerminal ? 'Completed' : 'Created'} {new Date(order.createdAt).toLocaleDateString('en-IN', {
                 day: 'numeric',
                 month: 'short',
@@ -203,8 +203,8 @@ export default function OrderCard({
             
             {/* Arrow indicator */}
             <svg 
-              className="w-4 h-4 text-text-tertiary dark:text-text-dark-tertiary 
-                        group-hover:text-brand-600 dark:group-hover:text-brand-400 
+              className="w-4 h-4 text-gray-500 
+                        group-hover:text-blue-600 
                         transition-all duration-200 group-hover:translate-x-0.5" 
               fill="none" 
               viewBox="0 0 24 24" 
