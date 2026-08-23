@@ -2,7 +2,8 @@
 
 A full-stack delivery management system with role-based access for **customers**, **delivery agents**, and **admins**. Built with React (Vite) + Tailwind CSS, Node.js + Express, PostgreSQL + Prisma, and JWT authentication.
 
-**Live app:** https://last-mile-delivery-jet.vercel.app  
+**Live App (Frontend):** https://last-mile-delivery-jet.vercel.app  
+**Backend API:** https://lastmile-delivery-gbhq.onrender.com/api/v1  
 **GitHub:** https://github.com/Siyabojewar/LastMile_Delivery
 
 **Frontend highlights:** guided multi-step order creation with live volumetric preview, prominent quote card before confirmation, visual progress stepper for tracking, append-only audit timeline, mobile-responsive navbar with active-link highlighting, role-specific UI flows, and consistent empty states across all pages.

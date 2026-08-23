@@ -33,7 +33,7 @@ const STEPS = [
   { n: '01', icon: '📝', title: 'Create account',   desc: 'Sign up as a customer in under a minute — no admin approval needed.' },
   { n: '02', icon: '🧾', title: 'Get a quote',       desc: 'Enter pickup and drop details to see the exact charge upfront.' },
   { n: '03', icon: '📦', title: 'Place your order',  desc: 'Confirm the quote and your shipment enters the pipeline immediately.' },
-  { n: '04', icon: '📍', title: 'Track live',        desc: 'Real-time status updates and email notifications at every stage.' },
+  { n: '04', icon: '📍', title: 'Track live',        desc: 'Real-time status updates at every stage of your delivery.' },
 ];
 
 const ROLES = [
@@ -43,7 +43,7 @@ const ROLES = [
     color: 'border-l-4 border-emerald-500',
     iconBg: 'bg-emerald-50 text-emerald-600',
     desc: 'Place orders, get instant quotes, track shipments, and reschedule failed deliveries — all from one dashboard.',
-    perks: ['Instant price quotes', 'Live tracking timeline', 'Email notifications', 'COD & prepaid support'],
+    perks: ['Instant price quotes', 'Live tracking timeline', 'COD & prepaid support'],
   },
   {
     icon: '🚴‍♂️',
