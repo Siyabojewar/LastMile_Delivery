@@ -4,6 +4,7 @@ A full-stack delivery management system with role-based access for **customers**
 
 **Live App (Frontend):** https://last-mile-delivery-jet.vercel.app  
 **Backend API:** https://lastmile-delivery-gbhq.onrender.com/api/v1  
+> Note: visiting this URL directly in a browser returns a JSON `{"error":"Route not found"}` — that's expected, since it's an API base path with no matching route, not a webpage. Use it via the frontend app or an API client (e.g. Postman) hitting specific endpoints like `/auth/login`.
 **GitHub:** https://github.com/Siyabojewar/LastMile_Delivery
 
 **Frontend highlights:** guided multi-step order creation with live volumetric preview, prominent quote card before confirmation, visual progress stepper for tracking, append-only audit timeline, mobile-responsive navbar with active-link highlighting, role-specific UI flows, and consistent empty states across all pages.
