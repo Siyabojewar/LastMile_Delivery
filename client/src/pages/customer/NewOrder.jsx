@@ -5,6 +5,7 @@ import PageHeader from '../../components/shared/PageHeader';
 import FormSection from '../../components/shared/FormSection';
 import FormField from '../../components/shared/FormField';
 import Select from '../../components/shared/Select';
+import PincodeSelect from '../../components/shared/PincodeSelect';
 import QuoteCard from '../../components/shared/QuoteCard';
 import Alert from '../../components/shared/Alert';
 
@@ -193,17 +194,15 @@ export default function NewOrder() {
             label="Pickup Pincode"
             required
             error={fieldErrors.pickupPincode}
-            hint="Must be a serviceable pincode mapped by admin"
+            hint="Only serviceable pincodes are shown — select one from the list"
             className="max-w-xs"
           >
-            <input className="input"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]{5,6}"
-              placeholder="e.g. 411001"
-              maxLength={6}
-              value={form.pickupPincode} 
-              onChange={e => set('pickupPincode', e.target.value)}
+            <PincodeSelect
+              id="pickupPincode"
+              value={form.pickupPincode}
+              onChange={v => set('pickupPincode', v)}
+              error={Boolean(fieldErrors.pickupPincode)}
+              placeholder="Search pincode or zone…"
             />
           </FormField>
         </FormSection>
@@ -235,17 +234,15 @@ export default function NewOrder() {
             label="Drop Pincode"
             required
             error={fieldErrors.dropPincode}
-            hint="Delivery location pincode"
+            hint="Only serviceable pincodes are shown — select one from the list"
             className="max-w-xs"
           >
-            <input className="input"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]{5,6}"
-              placeholder="e.g. 411045"
-              maxLength={6}
-              value={form.dropPincode} 
-              onChange={e => set('dropPincode', e.target.value)}
+            <PincodeSelect
+              id="dropPincode"
+              value={form.dropPincode}
+              onChange={v => set('dropPincode', v)}
+              error={Boolean(fieldErrors.dropPincode)}
+              placeholder="Search pincode or zone…"
             />
           </FormField>
         </FormSection>

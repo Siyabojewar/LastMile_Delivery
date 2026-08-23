@@ -10,6 +10,19 @@ const router = express.Router();
 // All order routes require authentication
 router.use(authenticate);
 
+// GET /api/v1/orders/serviceable-pincodes — returns all pincodes + zone names
+router.get('/serviceable-pincodes', authorize('customer', 'admin', 'agent'), async (req, res, next) => {
+  try {
+    const pincodes = await prisma.pincodeZoneMap.findMany({
+      include: { zone: { select: { name: true } } },
+      orderBy: { pincode: 'asc' },
+    });
+    res.json(pincodes.map(p => ({ pincode: p.pincode, zoneName: p.zone?.name || '' })));
+  } catch (err) {
+    next(err);
+  }
+});
+
 // ─── QUOTE (no order created) ─────────────────────────────────────────────────
 
 // POST /api/v1/orders/quote
