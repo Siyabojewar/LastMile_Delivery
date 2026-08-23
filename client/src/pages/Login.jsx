@@ -77,20 +77,19 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-12 bg-gradient-to-br from-neutral-50 via-white to-blue-50/30 dark:from-neutral-950 dark:via-neutral-900 dark:to-blue-950/20">
+    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-12 bg-gray-50">
       <div className="w-full max-w-md animate-slide-up">
 
         {/* Brand Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl
-                          bg-brand-600 dark:bg-brand-500 text-white text-3xl mb-4 shadow-card-lg
-                          ring-4 ring-brand-200 dark:ring-brand-800 select-none">
+                          bg-blue-600 text-white text-3xl mb-4 shadow-xl select-none">
             📦
           </div>
-          <h1 className="text-3xl font-bold text-text-primary dark:text-text-dark-primary mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome back
           </h1>
-          <p className="text-text-secondary dark:text-text-dark-secondary">
+          <p className="text-gray-600">
             Sign in to your DeliverySync account
           </p>
         </div>
@@ -141,9 +140,7 @@ export default function Login() {
               <div className="mt-3 text-right">
                 <Link 
                   to="/forgot-password" 
-                  className="text-sm font-semibold text-brand-600 dark:text-brand-400 
-                           hover:text-brand-700 dark:hover:text-brand-300 hover:underline
-                           transition-colors"
+                  className="text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -172,13 +169,11 @@ export default function Login() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-text-secondary dark:text-text-dark-secondary">
+            <p className="text-sm text-gray-600">
               New to DeliverySync?{' '}
               <Link 
                 to="/register" 
-                className="font-semibold text-brand-600 dark:text-brand-400 
-                         hover:text-brand-700 dark:hover:text-brand-300 hover:underline
-                         transition-colors"
+                className="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
               >
                 Create a free account
               </Link>
@@ -186,14 +181,12 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Role Information */}
-        <div className="mt-6 p-4 bg-surface-secondary dark:bg-surface-dark-secondary rounded-xl 
-                       border border-border-light dark:border-border-dark">
+        <div className="mt-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
           <div className="flex items-center justify-center gap-6 text-sm">
             {[
-              { icon: '🛡', label: 'Admin', color: 'text-purple-600 dark:text-purple-400' },
-              { icon: '🚴', label: 'Agent', color: 'text-amber-600 dark:text-amber-400' },
-              { icon: '📦', label: 'Customer', color: 'text-emerald-600 dark:text-emerald-400' },
+              { icon: '🛡️', label: 'Admin',    color: 'text-purple-700' },
+              { icon: '🚴', label: 'Agent',    color: 'text-amber-700' },
+              { icon: '📦', label: 'Customer', color: 'text-emerald-700' },
             ].map(role => (
               <div key={role.label} className="flex items-center gap-1.5">
                 <span className="text-base">{role.icon}</span>
@@ -201,8 +194,8 @@ export default function Login() {
               </div>
             ))}
           </div>
-          <p className="text-center text-xs text-text-tertiary dark:text-text-dark-tertiary mt-2">
-            Admin & agent accounts are created by administrators
+          <p className="text-center text-xs text-gray-500 mt-2">
+            Admin &amp; agent accounts are created by administrators
           </p>
         </div>
       </div>

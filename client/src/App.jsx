@@ -49,7 +49,7 @@ export default function App() {
   const isLanding = location.pathname === '/';
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-neutral-50 via-white to-blue-50/30 dark:from-neutral-950 dark:via-neutral-900 dark:to-blue-950/20">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
       <main className={`flex-1 w-full animate-fade-in ${
         isLanding
@@ -109,8 +109,8 @@ export default function App() {
 
       {/* Global footer — hidden on landing (it has its own) */}
       {!isLanding && (
-        <footer className="text-center py-6 text-sm border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50">
-          <p className="text-neutral-600 dark:text-neutral-400">© 2024 DeliverySync. Built with precision.</p>
+        <footer className="text-center py-6 text-sm border-t border-gray-200 bg-white">
+          <p className="text-gray-600">© 2024 DeliverySync. Built with precision.</p>
         </footer>
       )}
     </div>

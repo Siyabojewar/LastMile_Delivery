@@ -2,422 +2,332 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-/* ── Feature card data ──────────────────────────────────────────────────── */
 const FEATURES = [
   {
-    icon: '🧾',
-    title: 'Smart Rate Calculation',
-    desc: 'AI-powered pricing based on distance, weight, and delivery complexity. Get instant quotes with zero hidden fees.',
-    accent: 'from-blue-500 to-indigo-600'
+    icon: '⚡',
+    title: 'Instant Rate Quotes',
+    desc: 'Get precise delivery charges based on actual weight, volumetric weight, pickup zone, and drop zone — before you commit.',
+    color: 'bg-amber-50 text-amber-600 border-amber-100',
   },
   {
     icon: '📍',
-    title: 'Real-Time GPS Tracking',
-    desc: 'Live location updates, ETA predictions, and automated customer notifications throughout the delivery journey.',
-    accent: 'from-emerald-500 to-teal-600'
+    title: 'Live Order Tracking',
+    desc: 'Follow every shipment through Picked Up → In Transit → Out for Delivery → Delivered with full timestamped history.',
+    color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
   },
   {
     icon: '🚴‍♂️',
-    title: 'Intelligent Dispatch',
-    desc: 'Machine learning algorithms assign orders to the optimal delivery agent based on proximity and workload.',
-    accent: 'from-purple-500 to-violet-600'
+    title: 'Smart Agent Dispatch',
+    desc: 'Orders auto-assigned to the nearest available agent using zone-matching and distance calculation. Manual override available.',
+    color: 'bg-blue-50 text-blue-600 border-blue-100',
   },
   {
-    icon: '⚡',
-    title: 'Lightning Fast Processing',
-    desc: 'Sub-second order processing with automatic route optimization and instant confirmation notifications.',
-    accent: 'from-amber-500 to-orange-600'
+    icon: '💳',
+    title: 'Prepaid & COD Support',
+    desc: 'Full support for prepaid and Cash on Delivery orders. COD surcharges are admin-configurable and shown in every quote.',
+    color: 'bg-purple-50 text-purple-600 border-purple-100',
   },
 ];
 
-/* ── How it works steps ─────────────────────────────────────────────────── */
-const WORKFLOW = [
-  { 
-    step: '01', 
-    icon: '📝', 
-    title: 'Place Order',  
-    desc: 'Enter pickup & delivery details to get instant pricing',
-    color: 'text-blue-600 dark:text-blue-400'
-  },
-  { 
-    step: '02', 
-    icon: '🎯', 
-    title: 'Smart Assignment',      
-    desc: 'AI automatically assigns to the best available agent',
-    color: 'text-emerald-600 dark:text-emerald-400'
-  },
-  { 
-    step: '03', 
-    icon: '🚚', 
-    title: 'Real-Time Updates', 
-    desc: 'Track every milestone with live GPS and notifications',
-    color: 'text-purple-600 dark:text-purple-400'
-  },
-  { 
-    step: '04', 
-    icon: '✅', 
-    title: 'Delivered',       
-    desc: 'Proof of delivery with photos and digital signatures',
-    color: 'text-orange-600 dark:text-orange-400'
-  },
+const STEPS = [
+  { n: '01', icon: '📝', title: 'Create account',   desc: 'Sign up as a customer in under a minute — no admin approval needed.' },
+  { n: '02', icon: '🧾', title: 'Get a quote',       desc: 'Enter pickup and drop details to see the exact charge upfront.' },
+  { n: '03', icon: '📦', title: 'Place your order',  desc: 'Confirm the quote and your shipment enters the pipeline immediately.' },
+  { n: '04', icon: '📍', title: 'Track live',        desc: 'Real-time status updates and email notifications at every stage.' },
 ];
 
-/* ── Role cards ─────────────────────────────────────────────────────────── */
-const USER_ROLES = [
-  { 
-    icon: '🛍️', 
-    role: 'Customers', 
-    desc: 'Small businesses and individuals who need reliable last-mile delivery services',
-    features: ['Instant Quotes', 'Live Tracking', 'Flexible Scheduling', 'Multiple Payment Options'],
-    gradient: 'from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30',
-    iconBg: 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+const ROLES = [
+  {
+    icon: '📦',
+    role: 'Customer',
+    color: 'border-l-4 border-emerald-500',
+    iconBg: 'bg-emerald-50 text-emerald-600',
+    desc: 'Place orders, get instant quotes, track shipments, and reschedule failed deliveries — all from one dashboard.',
+    perks: ['Instant price quotes', 'Live tracking timeline', 'Email notifications', 'COD & prepaid support'],
   },
-  { 
-    icon: '🚴‍♂️', 
-    role: 'Delivery Agents',    
-    desc: 'Professional drivers and riders who fulfill delivery orders efficiently',
-    features: ['Route Optimization', 'Earnings Dashboard', 'Performance Analytics', 'Mobile App'],
-    gradient: 'from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30',
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400'
+  {
+    icon: '🚴‍♂️',
+    role: 'Delivery Agent',
+    color: 'border-l-4 border-amber-500',
+    iconBg: 'bg-amber-50 text-amber-600',
+    desc: 'View your assigned deliveries, update status at each stage, and log delivery notes from the field.',
+    perks: ['Auto-assigned orders', 'Status update controls', 'Delivery note logging', 'Zone-based matching'],
   },
-  { 
-    icon: '⚙️', 
-    role: 'Administrators',    
-    desc: 'System managers who oversee operations and configure business rules',
-    features: ['Fleet Management', 'Analytics Dashboard', 'Rate Configuration', 'User Management'],
-    gradient: 'from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30',
-    iconBg: 'bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400'
+  {
+    icon: '🛡️',
+    role: 'Administrator',
+    color: 'border-l-4 border-purple-500',
+    iconBg: 'bg-purple-50 text-purple-600',
+    desc: 'Configure zones, rate cards, and agents. Oversee every order in the system with full control.',
+    perks: ['Zone & rate management', 'Agent management', 'Full order oversight', 'Auto-assign controls'],
   },
-];
-
-const STATS = [
-  { value: '50K+', label: 'Deliveries Completed', icon: '📦' },
-  { value: '1.2K+', label: 'Active Agents', icon: '🚴‍♂️' },
-  { value: '99.2%', label: 'Success Rate', icon: '✅' },
-  { value: '4.8★', label: 'Average Rating', icon: '⭐' },
 ];
 
 export default function Landing() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-blue-50/30 dark:from-neutral-950 dark:via-neutral-900 dark:to-blue-950/20">
+    <div className="min-h-screen bg-white">
 
-      {/* ── Enhanced Hero Section ─────────────────────────────────────────── */}
-      <section className="relative overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute -top-40 -right-32 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-blue-400/20 via-indigo-400/10 to-purple-400/20 blur-3xl animate-pulse" />
-          <div className="absolute -bottom-32 -left-40 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-emerald-400/20 via-teal-400/10 to-blue-400/20 blur-3xl animate-pulse delay-1000" />
-          <div className="absolute top-20 right-1/4 w-[300px] h-[300px] rounded-full bg-gradient-to-bl from-purple-400/15 via-pink-400/10 to-indigo-400/15 blur-2xl animate-pulse delay-500" />
-        </div>
+      {/* ── HERO ─────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-[#0f0c29] bg-gradient-to-br from-[#0f0c29] via-[#1a1560] to-[#24243e]">
+        {/* Grid pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)`,
+            backgroundSize: '48px 48px',
+          }}
+        />
 
-        {/* Subtle Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-[size:60px_60px] dark:bg-[linear-gradient(rgba(99,102,241,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.1)_1px,transparent_1px)]" />
+        {/* Glow blobs */}
+        <div className="absolute top-0 left-1/4 w-[500px] h-[400px] bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24 sm:py-32">
-          <div className="text-center">
-            {/* Premium Badge */}
-            <div className="inline-flex items-center gap-3 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm text-neutral-700 dark:text-neutral-200 rounded-full px-6 py-3 text-sm font-semibold mb-8 shadow-lg ring-1 ring-neutral-200/50 dark:ring-neutral-700/50">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-emerald-600 dark:text-emerald-400">Live System</span>
-              </div>
-              <span className="w-px h-4 bg-neutral-300 dark:bg-neutral-600"></span>
-              <span>🚀 Enterprise-Grade Delivery Platform</span>
-            </div>
+        <div className="relative max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-28 sm:py-36 text-center">
 
-            {/* Hero Headline */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-neutral-900 dark:text-white leading-[1.1] tracking-tight mb-8">
-              <span className="block">Logistics Platform</span>
-              <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-                Built for Scale
-              </span>
-            </h1>
-
-            {/* Compelling Subheading */}
-            <p className="text-xl sm:text-2xl text-neutral-600 dark:text-neutral-300 max-w-4xl mx-auto leading-relaxed mb-12 font-medium">
-              Advanced delivery management with <span className="text-blue-600 dark:text-blue-400 font-semibold">AI-powered routing</span>, 
-              real-time tracking, and intelligent dispatch. 
-              <span className="block mt-2 text-lg">Trusted by businesses for mission-critical deliveries.</span>
-            </p>
-
-            {/* Enhanced CTA Buttons */}
-            {user ? (
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-                <Link
-                  to={user.role === 'admin' ? '/admin/orders' : user.role === 'agent' ? '/agent/orders' : '/customer/orders'}
-                  className="group inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-300"
-                >
-                  <span>Open Dashboard</span>
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </Link>
-              </div>
-            ) : (
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-                <Link
-                  to="/register"
-                  className="group inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-300"
-                >
-                  <span>Start Free Trial</span>
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </Link>
-                <Link
-                  to="/login"
-                  className="group inline-flex items-center gap-3 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white border-2 border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
-                >
-                  <span>Sign In</span>
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h1m5 4v6m4-6v6m4-6v6" />
-                  </svg>
-                </Link>
-              </div>
-            )}
-
-            {/* Trust Indicators / Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-              {STATS.map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-2">{stat.value}</div>
-                  <div className="text-sm text-neutral-600 dark:text-neutral-400 font-medium flex items-center justify-center gap-1">
-                    <span className="text-lg">{stat.icon}</span>
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Enhanced Features Grid ────────────────────────────────────────── */}
-      <section className="relative py-24 bg-gradient-to-b from-white to-neutral-50 dark:from-neutral-900 dark:to-neutral-950">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              <span>✨</span> Platform Features
-            </div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-neutral-900 dark:text-white mb-6">
-              Everything You Need for
-              <span className="block text-blue-600 dark:text-blue-400">Modern Logistics</span>
-            </h2>
-            <p className="text-xl text-neutral-600 dark:text-neutral-300 max-w-3xl mx-auto">
-              Built with enterprise-grade architecture and designed for businesses that demand reliability, speed, and scalability.
-            </p>
+          {/* Eyebrow badge */}
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-blue-200 rounded-full px-5 py-2 text-sm font-medium mb-8 backdrop-blur-sm">
+            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+            Last-Mile Delivery Platform
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {FEATURES.map((feature, i) => (
-              <div
-                key={i}
-                className="group relative bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden"
+          {/* Main headline — Space Grotesk applied via h1 */}
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] tracking-tight mb-7">
+            Deliveries that run
+            <span className="block mt-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-300">
+              like clockwork.
+            </span>
+          </h1>
+
+          <p className="text-lg sm:text-xl text-blue-100/80 max-w-2xl mx-auto leading-relaxed mb-12" style={{ fontFamily: 'Inter, sans-serif' }}>
+            DeliverySync is a complete delivery management system for customers, agents, and admins.
+            Instant quotes, real-time tracking, and intelligent dispatch — in one platform.
+          </p>
+
+          {/* CTA buttons */}
+          {user ? (
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to={user.role === 'admin' ? '/admin/orders' : user.role === 'agent' ? '/agent/orders' : '/customer/orders'}
+                className="inline-flex items-center gap-2 bg-white text-indigo-700 font-bold px-8 py-4 rounded-xl shadow-2xl hover:bg-blue-50 transition-all duration-200 text-base"
               >
-                {/* Gradient Background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.accent} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-                
-                <div className="relative p-8">
-                  <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-700 dark:to-neutral-800 flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        {feature.icon}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {feature.title}
-                      </h3>
-                      <p className="text-neutral-600 dark:text-neutral-300 leading-relaxed">
-                        {feature.desc}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Enhanced How it Works ─────────────────────────────────────────── */}
-      <section className="relative py-24 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 px-4 py-2 rounded-full text-sm font-semibold mb-4 shadow-lg">
-              <span>🚀</span> Simple Process
+                Go to Dashboard
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
             </div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-neutral-900 dark:text-white mb-6">
-              From Order to Delivery
-              <span className="block text-blue-600 dark:text-blue-400">In Four Steps</span>
-            </h2>
-            <p className="text-xl text-neutral-600 dark:text-neutral-300 max-w-3xl mx-auto">
-              Our streamlined workflow ensures every delivery is tracked, optimized, and completed efficiently.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {WORKFLOW.map((step, i) => (
-              <div key={i} className="relative">
-                {/* Connection Line */}
-                {i < WORKFLOW.length - 1 && (
-                  <div className="hidden lg:block absolute top-16 left-full w-full h-px bg-gradient-to-r from-blue-200 to-indigo-200 dark:from-blue-800 dark:to-indigo-800 z-10" />
-                )}
-                
-                <div className="relative bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                  {/* Step Number Badge */}
-                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 text-white text-sm font-bold rounded-full flex items-center justify-center shadow-lg">
-                    {step.step}
-                  </div>
-                  
-                  <div className="p-8 text-center">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-700 dark:to-neutral-800 flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      {step.icon}
-                    </div>
-                    <h3 className={`text-lg font-bold mb-3 ${step.color}`}>
-                      {step.title}
-                    </h3>
-                    <p className="text-neutral-600 dark:text-neutral-300 text-sm leading-relaxed">
-                      {step.desc}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Enhanced Roles Section ────────────────────────────────────────── */}
-      <section className="relative py-24 bg-white dark:bg-neutral-900">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              <span>👥</span> Built for Everyone
-            </div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-neutral-900 dark:text-white mb-6">
-              Tailored Experience
-              <span className="block text-emerald-600 dark:text-emerald-400">For Every User</span>
-            </h2>
-            <p className="text-xl text-neutral-600 dark:text-neutral-300 max-w-3xl mx-auto">
-              Role-based dashboards and features designed specifically for customers, delivery agents, and administrators.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {USER_ROLES.map((role, i) => (
-              <div
-                key={i}
-                className={`relative rounded-3xl border border-neutral-200 dark:border-neutral-700 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group ${role.gradient}`}
-              >
-                <div className="relative p-8">
-                  <div className="text-center mb-6">
-                    <div className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl ${role.iconBg} text-4xl shadow-lg group-hover:scale-110 transition-transform duration-300 mb-4`}>
-                      {role.icon}
-                    </div>
-                    <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-3">
-                      {role.role}
-                    </h3>
-                    <p className="text-neutral-600 dark:text-neutral-300 leading-relaxed mb-6">
-                      {role.desc}
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {role.features.map((feature, j) => (
-                      <div key={j} className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300">
-                        <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                          <svg className="w-3 h-3 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="font-medium">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Enhanced CTA Section ──────────────────────────────────────────── */}
-      {!user && (
-        <section className="relative py-24 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-700 dark:via-indigo-700 dark:to-purple-700">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:60px_60px]" />
-          
-          <div className="relative max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-              Ready to Transform
-              <span className="block">Your Delivery Operations?</span>
-            </h2>
-            <p className="text-xl text-blue-100 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Join thousands of businesses already using DeliverySync to streamline their logistics and delight their customers.
-            </p>
+          ) : (
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/register"
-                className="group inline-flex items-center gap-3 bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-xl font-bold text-lg shadow-2xl hover:shadow-white/25 transform hover:-translate-y-1 transition-all duration-300"
+                className="inline-flex items-center gap-2 bg-white text-indigo-700 font-bold px-8 py-4 rounded-xl shadow-2xl hover:bg-blue-50 transition-all duration-200 text-base"
               >
-                <span>Start Free Trial</span>
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                Create free account
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </Link>
               <Link
                 to="/login"
-                className="group inline-flex items-center gap-3 bg-transparent border-2 border-white/50 text-white hover:bg-white/10 px-8 py-4 rounded-xl font-semibold text-lg backdrop-blur-sm transition-all duration-300"
+                className="inline-flex items-center gap-2 border-2 border-white/40 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/10 transition-all duration-200 text-base backdrop-blur-sm"
               >
-                <span>Sign In</span>
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h1m5 4v6m4-6v6m4-6v6" />
+                Sign in
+              </Link>
+            </div>
+          )}
+
+          {/* Stats strip */}
+          <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-8 max-w-2xl mx-auto">
+            {[
+              { v: '50K+', l: 'Deliveries' },
+              { v: '1,200+', l: 'Active agents' },
+              { v: '99.2%', l: 'Success rate' },
+              { v: '4.8 ★', l: 'Avg. rating' },
+            ].map((s) => (
+              <div key={s.l} className="text-center">
+                <div className="text-2xl sm:text-3xl font-bold text-white">{s.v}</div>
+                <div className="text-sm text-blue-300 mt-1">{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FEATURES ─────────────────────────────────────────────────── */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4">
+              Platform Features
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+              Everything you need to ship.
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              No hardcoded rates, no fixed zones — every parameter is admin-configurable.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {FEATURES.map((f) => (
+              <div
+                key={f.title}
+                className="group bg-white rounded-2xl border border-gray-200 p-8 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center text-2xl mb-5 ${f.color}`}>
+                  {f.icon}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{f.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS ─────────────────────────────────────────────── */}
+      <section className="py-24 bg-white border-t border-gray-100">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <span className="inline-block bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4">
+              How it works
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+              Ship in four steps.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {STEPS.map((s, i) => (
+              <div key={s.n} className="relative">
+                {/* Connector line */}
+                {i < STEPS.length - 1 && (
+                  <div className="hidden lg:block absolute top-8 left-[calc(100%-0px)] w-full h-px bg-gradient-to-r from-gray-300 to-transparent z-10" />
+                )}
+                <div className="bg-gray-50 rounded-2xl border border-gray-200 p-7 hover:border-blue-200 hover:shadow-md transition-all duration-200 h-full">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-3xl">{s.icon}</span>
+                    <span className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full">
+                      {s.n}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{s.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── ROLES ────────────────────────────────────────────────────── */}
+      <section className="py-24 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <span className="inline-block bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4">
+              Role-based access
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+              One platform, three roles.
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Each role has a tailored dashboard with exactly the tools and permissions it needs.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {ROLES.map((r) => (
+              <div
+                key={r.role}
+                className={`bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden ${r.color}`}
+              >
+                <div className="p-8">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-5 ${r.iconBg}`}>
+                    {r.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{r.role}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-6">{r.desc}</p>
+                  <ul className="space-y-2">
+                    {r.perks.map((p) => (
+                      <li key={p} className="flex items-center gap-2 text-sm text-gray-700">
+                        <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── BOTTOM CTA ───────────────────────────────────────────────── */}
+      {!user && (
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#1a1560] to-[#0f0c29] py-24">
+          <div
+            className="absolute inset-0 opacity-[0.06]"
+            style={{
+              backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
+              backgroundSize: '48px 48px',
+            }}
+          />
+          <div className="relative max-w-3xl mx-auto px-6 text-center">
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-5">Ready to ship?</h2>
+            <p className="text-blue-200 text-lg mb-10 leading-relaxed">
+              Create a free account and place your first order in minutes. No credit card required.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/register"
+                className="inline-flex items-center gap-2 bg-white text-indigo-700 font-bold px-8 py-4 rounded-xl shadow-2xl hover:bg-blue-50 transition-all duration-200 text-base"
+              >
+                Create free account
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
+              </Link>
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 border-2 border-white/40 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/10 transition-all duration-200 text-base"
+              >
+                Sign in
               </Link>
             </div>
           </div>
         </section>
       )}
 
-      {/* ── Enhanced Footer ───────────────────────────────────────────────── */}
-      <footer className="bg-neutral-900 dark:bg-neutral-950 border-t border-neutral-800 dark:border-neutral-800">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xl shadow-lg">
-                  📦
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-white">DeliverySync</div>
-                  <div className="text-sm text-neutral-400">Enterprise Logistics Platform</div>
-                </div>
+      {/* ── FOOTER ───────────────────────────────────────────────────── */}
+      <footer className="bg-gray-900 border-t border-gray-800">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-10">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white text-lg shadow-md">
+                📦
+              </div>
+              <div>
+                <div className="text-white font-bold text-base">DeliverySync</div>
+                <div className="text-gray-400 text-xs">Last-Mile Delivery Platform</div>
               </div>
             </div>
-            
-            <div className="flex flex-col sm:flex-row items-center gap-8 text-sm text-neutral-400">
-              <div className="flex items-center gap-6">
-                <a href="#" className="hover:text-white transition-colors">Privacy</a>
-                <a href="#" className="hover:text-white transition-colors">Terms</a>
-                <a href="#" className="hover:text-white transition-colors">Support</a>
-              </div>
-              <div className="text-center sm:text-right">
-                <p>Built with React, Express & PostgreSQL</p>
-                <p className="mt-1">
-                  <a
-                    href="https://github.com/Siyabojewar/LastMile_Delivery"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-blue-400 hover:text-blue-300 transition-colors"
-                  >
-                    View on GitHub →
-                  </a>
-                </p>
-              </div>
-            </div>
+            <p className="text-gray-500 text-sm text-center">
+              Built with React, Express &amp; PostgreSQL ·{' '}
+              <a
+                href="https://github.com/Siyabojewar/LastMile_Delivery"
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                View on GitHub →
+              </a>
+            </p>
           </div>
         </div>
       </footer>

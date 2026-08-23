@@ -51,20 +51,19 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-12 bg-gradient-to-br from-neutral-50 via-white to-blue-50/30 dark:from-neutral-950 dark:via-neutral-900 dark:to-blue-950/20">
+    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-12 bg-gray-50">
       <div className="w-full max-w-md animate-slide-up">
 
         {/* Brand Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl
-                          bg-brand-600 dark:bg-brand-500 text-white text-3xl mb-4 shadow-card-lg
-                          ring-4 ring-brand-200 dark:ring-brand-800 select-none">
+                          bg-blue-600 text-white text-3xl mb-4 shadow-xl select-none">
             🔑
           </div>
-          <h1 className="text-3xl font-bold text-text-primary dark:text-text-dark-primary mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Reset your password
           </h1>
-          <p className="text-text-secondary dark:text-text-dark-secondary">
+          <p className="text-gray-600">
             We'll send you a secure reset link via email
           </p>
         </div>
