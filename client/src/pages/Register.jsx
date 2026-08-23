@@ -151,7 +151,7 @@ export default function Register() {
               error={fieldErrors.name}
               hint="Enter your full name as it should appear on deliveries"
             >
-              <input
+              <input className="input"
                 type="text"
                 autoComplete="name"
                 placeholder="Rahul Sharma"
@@ -167,7 +167,7 @@ export default function Register() {
               error={fieldErrors.email}
               hint="We'll use this email for order updates and notifications"
             >
-              <input
+              <input className="input"
                 type="email"
                 autoComplete="email"
                 placeholder="rahul@example.com"
@@ -219,7 +219,7 @@ export default function Register() {
               error={fieldErrors.phone}
               hint="For delivery coordination (optional but recommended)"
             >
-              <input
+              <input className="input"
                 type="tel"
                 autoComplete="tel"
                 placeholder="9876543210"

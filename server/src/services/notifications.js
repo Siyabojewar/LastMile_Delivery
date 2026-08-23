@@ -5,13 +5,22 @@ let transporter;
 
 function getTransporter() {
   if (!transporter) {
+    const host = process.env.SMTP_HOST;
+    const port = parseInt(process.env.SMTP_PORT || '587');
+
+    // Warn if using the deprecated Mailtrap hostname — emails will be rejected
+    if (host === 'smtp.mailtrap.io') {
+      console.error('[Email] ⚠️  CRITICAL: SMTP_HOST is set to deprecated "smtp.mailtrap.io".');
+      console.error('[Email] ⚠️  Mailtrap free tier now requires: host=sandbox.smtp.mailtrap.io port=2525');
+      console.error('[Email] ⚠️  Update SMTP_HOST and SMTP_PORT in your Render environment variables.');
+    }
+
     const config = {
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
+      host,
+      port,
       secure: process.env.SMTP_SECURE === 'true',
     };
 
-    // Add authentication if credentials are provided
     if (process.env.SMTP_USER && process.env.SMTP_PASS) {
       config.auth = {
         user: process.env.SMTP_USER,
@@ -23,12 +32,20 @@ function getTransporter() {
     
     transporter = nodemailer.createTransport(config);
     
-    // Verify connection configuration
-    transporter.verify(function(error, success) {
+    transporter.verify(function(error) {
       if (error) {
-        console.error('[Email] SMTP connection verification failed:', error);
+        console.error('[Email] ❌ SMTP connection verification failed:', error.message);
+        console.error('[Email] ❌ Emails will NOT be delivered until SMTP config is fixed.');
+        if (error.message && error.message.includes('535')) {
+          console.error('[Email] ❌ Authentication failed — check SMTP_USER and SMTP_PASS.');
+        }
+        if (error.message && error.message.includes('ECONNREFUSED')) {
+          console.error('[Email] ❌ Connection refused — check SMTP_HOST and SMTP_PORT.');
+        }
+        // Reset transporter so the next request retries
+        transporter = null;
       } else {
-        console.log('[Email] SMTP server is ready to take our messages');
+        console.log('[Email] ✅ SMTP server is ready to take our messages');
       }
     });
   }
@@ -214,11 +231,7 @@ async function sendPasswordResetEmail(email, name, token) {
                 <tr>
                   <td style="padding: 30px 40px; background-color: #f8f9fa; border-radius: 0 0 12px 12px; border-top: 1px solid #e5e7eb; text-align: center;">
                     <p style="margin: 0; color: #6b7280; font-size: 12px;">
-                      This is an automated message from DeliverySync.<br>
-                      Need help? Contact our support team.
-                    </p>
-                    <p style="margin: 10px 0 0; color: #9ca3af; font-size: 11px;">
-                      © 2024 DeliverySync. All rights reserved.
+                      This is an automated message from DeliverySync.
                     </p>
                   </td>
                 </tr>
@@ -285,8 +298,13 @@ function checkEmailConfig() {
   }
   
   if (process.env.SMTP_HOST === 'smtp.mailtrap.io') {
-    console.warn('[Email] ⚠️  Using Mailtrap - emails will be captured for testing only');
-    console.warn('[Email] For production, configure a real email provider in .env');
+    console.error('[Email] ❌ SMTP_HOST="smtp.mailtrap.io" is the DEPRECATED Mailtrap endpoint — emails will be rejected.');
+    console.error('[Email] ❌ Fix on Render dashboard: set SMTP_HOST=sandbox.smtp.mailtrap.io and SMTP_PORT=2525');
+    return false;
+  }
+
+  if (process.env.SMTP_HOST === 'sandbox.smtp.mailtrap.io') {
+    console.log('[Email] ✅ Using Mailtrap sandbox — emails captured at https://mailtrap.io/inboxes');
   }
   
   return true;

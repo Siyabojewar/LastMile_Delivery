@@ -157,8 +157,8 @@ function ReschedulePanel({ orderId, onRescheduled }) {
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 ml-10">
           <div className="flex-1">
             <label htmlFor="reschedule-date" className="label">New Delivery Date</label>
-            <input
-              id="reschedule-date" className="input" type="date" required
+            <input className="input"
+              id="reschedule-date" type="date" required
               min={new Date().toISOString().split('T')[0]}
               value={date} onChange={e => setDate(e.target.value)}
             />

@@ -115,7 +115,7 @@ export default function Login() {
               error={fieldErrors.email}
               hint="Enter the email address associated with your account"
             >
-              <input
+              <input className="input"
                 type="email"
                 autoComplete="email"
                 placeholder="you@example.com"

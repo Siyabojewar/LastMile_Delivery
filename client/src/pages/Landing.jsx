@@ -293,28 +293,22 @@ export default function Landing() {
 
       {/* ── FOOTER ───────────────────────────────────────────────────── */}
       <footer className="bg-gray-900 border-t border-gray-800">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-10">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white text-lg shadow-md">
                 📦
               </div>
-              <div>
-                <div className="text-white font-bold text-base">DeliverySync</div>
-                <div className="text-gray-400 text-xs">Last-Mile Delivery Platform</div>
-              </div>
+              <span className="text-white font-bold text-base">DeliverySync</span>
             </div>
-            <p className="text-gray-500 text-sm text-center">
-              Built with React, Express &amp; PostgreSQL ·{' '}
-              <a
-                href="https://github.com/Siyabojewar/LastMile_Delivery"
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                View on GitHub →
-              </a>
-            </p>
+            <a
+              href="https://github.com/Siyabojewar/LastMile_Delivery"
+              target="_blank"
+              rel="noreferrer"
+              className="text-gray-400 hover:text-blue-400 text-sm transition-colors"
+            >
+              View on GitHub →
+            </a>
           </div>
         </div>
       </footer>

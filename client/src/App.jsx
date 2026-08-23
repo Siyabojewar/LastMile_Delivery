@@ -109,8 +109,8 @@ export default function App() {
 
       {/* Global footer — hidden on landing (it has its own) */}
       {!isLanding && (
-        <footer className="text-center py-6 text-sm border-t border-gray-200 bg-white">
-          <p className="text-gray-600">© 2024 DeliverySync. Built with precision.</p>
+        <footer className="text-center py-4 border-t border-gray-200 bg-white">
+          <span className="text-sm font-semibold text-gray-700">DeliverySync</span>
         </footer>
       )}
     </div>

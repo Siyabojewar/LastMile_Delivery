@@ -126,7 +126,7 @@ export default function ForgotPassword() {
                 error={fieldError}
                 hint="Enter the email address associated with your DeliverySync account"
               >
-                <input
+                <input className="input"
                   type="email"
                   autoComplete="email"
                   placeholder="Enter your email address"

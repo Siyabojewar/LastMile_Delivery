@@ -193,8 +193,8 @@ export default function AgentOrderDetail() {
               Delivery note
               <span className="ml-1 text-xs font-normal text-gray-400">(optional — visible to customer)</span>
             </label>
-            <input
-              id="status-note" className="input"
+            <input className="input"
+              id="status-note"
               placeholder="e.g. Left at front door, recipient not available…"
               value={note} onChange={e => setNote(e.target.value)}
             />

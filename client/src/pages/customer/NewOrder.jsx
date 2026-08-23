@@ -180,9 +180,8 @@ export default function NewOrder() {
             error={fieldErrors.pickupAddress}
             hint="Enter the complete pickup address with landmarks"
           >
-            <textarea
+            <textarea className="input resize-none"
               rows={3}
-              className="resize-none"
               placeholder="e.g. 12, MG Road, Koregaon Park, Pune - 411001"
               value={form.pickupAddress} 
               onChange={e => set('pickupAddress', e.target.value)}
@@ -197,7 +196,7 @@ export default function NewOrder() {
             hint="Must be a serviceable pincode mapped by admin"
             className="max-w-xs"
           >
-            <input
+            <input className="input"
               type="text"
               inputMode="numeric"
               pattern="[0-9]{5,6}"
@@ -223,9 +222,8 @@ export default function NewOrder() {
             error={fieldErrors.dropAddress}
             hint="Enter the complete delivery address with landmarks"
           >
-            <textarea
+            <textarea className="input resize-none"
               rows={3}
-              className="resize-none"
               placeholder="e.g. 45, Baner Road, Baner, Pune - 411045"
               value={form.dropAddress} 
               onChange={e => set('dropAddress', e.target.value)}
@@ -240,7 +238,7 @@ export default function NewOrder() {
             hint="Delivery location pincode"
             className="max-w-xs"
           >
-            <input
+            <input className="input"
               type="text"
               inputMode="numeric"
               pattern="[0-9]{5,6}"
@@ -266,7 +264,7 @@ export default function NewOrder() {
               required
               error={fieldErrors.lengthCm}
             >
-              <input
+              <input className="input"
                 type="number"
                 min="0.1"
                 step="0.1"
@@ -282,7 +280,7 @@ export default function NewOrder() {
               required
               error={fieldErrors.breadthCm}
             >
-              <input
+              <input className="input"
                 type="number"
                 min="0.1"
                 step="0.1"
@@ -298,7 +296,7 @@ export default function NewOrder() {
               required
               error={fieldErrors.heightCm}
             >
-              <input
+              <input className="input"
                 type="number"
                 min="0.1"
                 step="0.1"
@@ -314,7 +312,7 @@ export default function NewOrder() {
               required
               error={fieldErrors.actualWeightKg}
             >
-              <input
+              <input className="input"
                 type="number"
                 min="0.001"
                 step="0.001"
@@ -405,7 +403,7 @@ export default function NewOrder() {
             hint="Leave empty for immediate pickup scheduling"
             className="max-w-sm"
           >
-            <input
+            <input className="input"
               type="date"
               min={new Date().toISOString().split('T')[0]}
               value={form.scheduledDate} 
