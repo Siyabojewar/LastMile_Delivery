@@ -1,34 +1,66 @@
 import React from 'react';
 
 /**
- * Visual grouping container for related form fields.
- * Renders as a white card with a branded left accent stripe on the active step.
+ * Professional form section component for grouping related form fields.
+ * Features step indicators, icons, and consistent visual hierarchy.
  *
  * Props:
  *   title    – section heading (required)
  *   icon     – emoji shown beside title
  *   step     – optional step number (shown as branded circle)
- *   children
+ *   description – optional subtitle text
+ *   children – form fields
  */
-export default function FormSection({ title, icon, step, children }) {
+export default function FormSection({ title, icon, step, description, children }) {
   return (
-    <div className="form-section relative overflow-hidden">
-      {/* Subtle left-accent stripe */}
-      <div className="absolute left-0 top-4 bottom-4 w-0.5 bg-gradient-to-b from-brand-400 to-brand-200 rounded-full" />
+    <div className="relative p-6 bg-surface-primary dark:bg-surface-dark-primary rounded-2xl 
+                   border border-border-light dark:border-border-dark shadow-card-sm
+                   transition-all duration-200 hover:shadow-card-md">
+      
+      {/* Left accent stripe for visual hierarchy */}
+      <div className="absolute left-0 top-6 bottom-6 w-1 bg-gradient-to-b from-brand-500 to-brand-300 
+                     rounded-r-full opacity-60" />
 
-      <div className="form-section-title pl-3">
+      {/* Section Header */}
+      <div className="flex items-start gap-3 mb-6 pl-4">
+        {/* Step indicator */}
         {step != null && (
-          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full
-                           bg-brand-600 text-white text-xs font-extrabold shrink-0
-                           shadow-card ring-2 ring-brand-200">
+          <div className="shrink-0 w-8 h-8 rounded-xl bg-brand-600 dark:bg-brand-500 text-white 
+                         flex items-center justify-center text-sm font-bold shadow-card-sm
+                         ring-2 ring-brand-200 dark:ring-brand-800">
             {step}
-          </span>
+          </div>
         )}
-        {icon && <span className="text-base leading-none">{icon}</span>}
-        <span className="font-bold text-gray-700">{title}</span>
+
+        {/* Icon */}
+        {icon && !step && (
+          <div className="shrink-0 w-8 h-8 rounded-xl bg-surface-secondary dark:bg-surface-dark-secondary 
+                         flex items-center justify-center text-lg shadow-inner ring-1 
+                         ring-border-light dark:ring-border-dark">
+            {icon}
+          </div>
+        )}
+
+        {/* Title and description */}
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            {icon && step && (
+              <span className="text-lg" aria-hidden="true">{icon}</span>
+            )}
+            <h3 className="text-lg font-bold text-text-primary dark:text-text-dark-primary">
+              {title}
+            </h3>
+          </div>
+          {description && (
+            <p className="text-sm text-text-secondary dark:text-text-dark-secondary leading-relaxed">
+              {description}
+            </p>
+          )}
+        </div>
       </div>
 
-      <div className="space-y-4 pl-3">
+      {/* Form fields container */}
+      <div className="space-y-5 pl-4">
         {children}
       </div>
     </div>

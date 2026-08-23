@@ -30,23 +30,26 @@ export default function PageHeader({
     <div className="mb-8">
       {/* ── Breadcrumb trail ─────────────────────────────────────────────── */}
       {breadcrumbs && breadcrumbs.length > 0 && (
-        <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-3" aria-label="Breadcrumb">
+        <nav className="flex items-center gap-1.5 text-sm text-text-tertiary dark:text-text-dark-tertiary mb-4" aria-label="Breadcrumb">
           {breadcrumbs.map((crumb, i) => (
             <React.Fragment key={crumb.label}>
               {i > 0 && (
-                <svg className="w-3 h-3 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-3 h-3 text-text-tertiary dark:text-text-dark-tertiary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               )}
               {crumb.href && i < breadcrumbs.length - 1 ? (
                 <Link
                   to={crumb.href}
-                  className="font-medium text-brand-500 hover:text-brand-700 hover:underline transition-colors"
+                  className="font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 hover:underline transition-colors"
                 >
                   {crumb.label}
                 </Link>
               ) : (
-                <span className={i === breadcrumbs.length - 1 ? 'font-semibold text-gray-600 truncate max-w-[200px]' : ''}>
+                <span className={i === breadcrumbs.length - 1 
+                  ? 'font-semibold text-text-primary dark:text-text-dark-primary truncate max-w-[200px]' 
+                  : 'text-text-secondary dark:text-text-dark-secondary'
+                }>
                   {crumb.label}
                 </span>
               )}
@@ -59,12 +62,14 @@ export default function PageHeader({
       {back && !breadcrumbs && (
         <button
           onClick={handleBack}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600
-                     hover:text-brand-700 mb-4 group transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-brand-600 dark:text-brand-400
+                     hover:text-brand-700 dark:hover:text-brand-300 hover:bg-brand-50 dark:hover:bg-brand-900/20
+                     px-3 py-2 rounded-xl mb-4 group transition-all duration-200 ring-1 ring-transparent
+                     hover:ring-brand-200 dark:hover:ring-brand-800"
         >
           <svg
-            className="w-4 h-4 transition-transform duration-150 group-hover:-translate-x-0.5"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+            className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
@@ -76,9 +81,9 @@ export default function PageHeader({
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
           {icon && (
-            <div className="w-11 h-11 rounded-2xl bg-brand-100 text-brand-700 flex items-center
-                            justify-center text-xl shrink-0 select-none shadow-card
-                            ring-1 ring-brand-200">
+            <div className="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 
+                            flex items-center justify-center text-2xl shrink-0 select-none shadow-card-sm
+                            ring-1 ring-brand-200 dark:ring-brand-800">
               {icon}
             </div>
           )}

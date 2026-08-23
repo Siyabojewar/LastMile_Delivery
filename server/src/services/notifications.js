@@ -5,14 +5,31 @@ let transporter;
 
 function getTransporter() {
   if (!transporter) {
-    transporter = nodemailer.createTransport({
+    const config = {
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: process.env.SMTP_SECURE === 'true',
-      auth: {
+    };
+
+    // Add authentication if credentials are provided
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      config.auth = {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
-      },
+      };
+    }
+
+    console.log(`[Email] Configuring SMTP with host: ${config.host}:${config.port}, secure: ${config.secure}`);
+    
+    transporter = nodemailer.createTransport(config);
+    
+    // Verify connection configuration
+    transporter.verify(function(error, success) {
+      if (error) {
+        console.error('[Email] SMTP connection verification failed:', error);
+      } else {
+        console.log('[Email] SMTP server is ready to take our messages');
+      }
     });
   }
   return transporter;
@@ -124,44 +141,155 @@ function stubSms(order, status) {
  * @param {string} token - password reset token
  */
 async function sendPasswordResetEmail(email, name, token) {
-  const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password?token=${token}`;
-  
-  const htmlContent = `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #1d4ed8;">DeliverySync</h2>
-      <p>Hi ${name},</p>
-      <p>You requested a password reset for your DeliverySync account. Click the button below to set a new password:</p>
-      
-      <div style="margin: 24px 0; text-align: center;">
-        <a href="${resetUrl}" 
-           style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-          Reset Your Password
-        </a>
-      </div>
-      
-      <p style="color: #6b7280; font-size: 14px;">
-        This link will expire in 1 hour for security reasons. If you didn't request this reset, you can safely ignore this email.
-      </p>
-      
-      <p style="color: #6b7280; font-size: 12px; margin-top: 24px;">
-        Or copy and paste this URL into your browser:<br/>
-        <span style="word-break: break-all;">${resetUrl}</span>
-      </p>
-      
-      <p style="margin-top: 24px; color: #6b7280; font-size: 12px;">
-        This is an automated notification from DeliverySync.
-      </p>
-    </div>
-  `;
+  try {
+    const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password?token=${token}`;
+    
+    console.log(`[Email] Sending password reset email to: ${email}`);
+    console.log(`[Email] Reset URL: ${resetUrl}`);
+    
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Reset Your DeliverySync Password</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; background-color: #f8f9fa;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f8f9fa;">
+          <tr>
+            <td align="center" style="padding: 40px 20px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                
+                <!-- Header -->
+                <tr>
+                  <td style="padding: 40px 40px 20px; text-align: center; background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #1e40af 100%); border-radius: 12px 12px 0 0;">
+                    <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">
+                      🔐 DeliverySync
+                    </h1>
+                    <p style="margin: 8px 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">
+                      Password Reset Request
+                    </p>
+                  </td>
+                </tr>
+                
+                <!-- Content -->
+                <tr>
+                  <td style="padding: 40px;">
+                    <p style="margin: 0 0 20px; color: #374151; font-size: 16px;">
+                      Hi <strong>${name}</strong>,
+                    </p>
+                    <p style="margin: 0 0 20px; color: #374151; font-size: 16px;">
+                      You requested a password reset for your DeliverySync account. Click the button below to set a new password:
+                    </p>
+                    
+                    <!-- CTA Button -->
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                      <tr>
+                        <td align="center" style="padding: 30px 0;">
+                          <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; padding: 16px 32px; border-radius: 8px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); transition: all 0.2s ease;">
+                            Reset Your Password
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                    
+                    <!-- Security notice -->
+                    <div style="background-color: #fef3c7; border-radius: 8px; padding: 20px; margin: 30px 0; border-left: 4px solid #f59e0b;">
+                      <p style="margin: 0; color: #92400e; font-size: 14px; font-weight: 500;">
+                        ⚠️ <strong>Security Notice:</strong><br>
+                        This link will expire in 1 hour for your security. If you didn't request this reset, you can safely ignore this email.
+                      </p>
+                    </div>
+                    
+                    <!-- Alternative link -->
+                    <p style="margin: 30px 0 0; color: #6b7280; font-size: 14px; line-height: 1.5;">
+                      If the button doesn't work, copy and paste this link into your browser:<br>
+                      <a href="${resetUrl}" style="color: #2563eb; word-break: break-all;">${resetUrl}</a>
+                    </p>
+                  </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                  <td style="padding: 30px 40px; background-color: #f8f9fa; border-radius: 0 0 12px 12px; border-top: 1px solid #e5e7eb; text-align: center;">
+                    <p style="margin: 0; color: #6b7280; font-size: 12px;">
+                      This is an automated message from DeliverySync.<br>
+                      Need help? Contact our support team.
+                    </p>
+                    <p style="margin: 10px 0 0; color: #9ca3af; font-size: 11px;">
+                      © 2024 DeliverySync. All rights reserved.
+                    </p>
+                  </td>
+                </tr>
+                
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `;
 
-  const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.SMTP_FROM || process.env.SMTP_USER,
-    to: email,
-    subject: 'Reset Your DeliverySync Password',
-    html: htmlContent,
-  };
+    const mailOptions = {
+      from: process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@deliverysync.com',
+      to: email,
+      subject: '🔐 Reset Your DeliverySync Password',
+      html: htmlContent,
+    };
 
-  return getTransporter().sendMail(mailOptions);
+    const result = await getTransporter().sendMail(mailOptions);
+    console.log(`[Email] Password reset email sent successfully:`, result.messageId);
+    return result;
+    
+  } catch (error) {
+    console.error(`[Email] Failed to send password reset email:`, error);
+    throw new Error(`Email sending failed: ${error.message}`);
+  }
 }
 
-module.exports = { sendStatusEmail, sendPasswordResetEmail };
+/**
+ * Test email configuration by sending a test email
+ */
+async function testEmailConfiguration() {
+  try {
+    console.log('[Email] Testing email configuration...');
+    
+    const transporter = getTransporter();
+    const testResult = await transporter.verify();
+    
+    if (testResult) {
+      console.log('[Email] ✅ Email configuration is valid and ready');
+      return true;
+    } else {
+      console.log('[Email] ❌ Email configuration verification failed');
+      return false;
+    }
+  } catch (error) {
+    console.error('[Email] ❌ Email configuration test failed:', error.message);
+    return false;
+  }
+}
+
+/**
+ * Check if email service is properly configured for production
+ */
+function checkEmailConfig() {
+  const requiredVars = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS'];
+  const missing = requiredVars.filter(varName => !process.env[varName]);
+  
+  if (missing.length > 0) {
+    console.warn(`[Email] ⚠️  Missing environment variables: ${missing.join(', ')}`);
+    console.warn('[Email] Password reset emails may not work properly');
+    return false;
+  }
+  
+  if (process.env.SMTP_HOST === 'smtp.mailtrap.io') {
+    console.warn('[Email] ⚠️  Using Mailtrap - emails will be captured for testing only');
+    console.warn('[Email] For production, configure a real email provider in .env');
+  }
+  
+  return true;
+}
+
+module.exports = { sendStatusEmail, sendPasswordResetEmail, testEmailConfiguration, checkEmailConfig };

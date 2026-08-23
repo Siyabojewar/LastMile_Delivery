@@ -6,18 +6,27 @@ export default function PasswordInput({
   value,
   onChange,
   autoComplete,
-  className = "input",
+  className = "",
   required = false,
   minLength,
+  error = false,
+  success = false,
+  disabled = false,
   ...props
 }) {
   const [showPassword, setShowPassword] = useState(false);
+
+  const baseClasses = error 
+    ? "input input-error" 
+    : success 
+      ? "input input-success" 
+      : "input";
 
   return (
     <div className="relative">
       <input
         id={id}
-        className={`${className} pr-12`}
+        className={`${baseClasses} pr-12 ${className}`}
         type={showPassword ? 'text' : 'password'}
         autoComplete={autoComplete}
         placeholder={placeholder}
@@ -25,14 +34,21 @@ export default function PasswordInput({
         minLength={minLength}
         value={value}
         onChange={onChange}
+        disabled={disabled}
         {...props}
       />
       <button
         type="button"
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 
-                   transition-colors p-1 rounded-md hover:bg-gray-50"
+        className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg
+                   text-text-tertiary dark:text-text-dark-tertiary 
+                   hover:text-text-secondary dark:hover:text-text-dark-secondary 
+                   hover:bg-surface-secondary dark:hover:bg-surface-dark-secondary
+                   focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1
+                   transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={() => setShowPassword(!showPassword)}
+        disabled={disabled}
         tabIndex={-1}
+        aria-label={showPassword ? "Hide password" : "Show password"}
       >
         {showPassword ? (
           // Eye-off icon (password hidden)

@@ -1,15 +1,49 @@
 import React from 'react';
-import { STATUS_COLORS, STATUS_LABELS, STATUS_DOT_COLORS } from '../../utils/statusColors';
+import { STATUS_COLORS, STATUS_LABELS, STATUS_DOT_COLORS, STATUS_ICONS } from '../../utils/statusColors';
 
-export default function StatusBadge({ status, size = 'md' }) {
-  const color = STATUS_COLORS[status] || 'bg-gray-100 text-gray-600';
-  const dot   = STATUS_DOT_COLORS[status] || 'bg-gray-400';
+export default function StatusBadge({ status, size = 'md', showIcon = true, showDot = true }) {
+  const colors = STATUS_COLORS[status] || 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 ring-neutral-200 dark:ring-neutral-600';
+  const dotColor = STATUS_DOT_COLORS[status] || 'bg-neutral-400 dark:bg-neutral-500';
   const label = STATUS_LABELS[status] || status;
+  const icon = STATUS_ICONS[status];
+
+  const sizeClasses = {
+    sm: 'text-xs px-2.5 py-1 gap-1.5',
+    md: 'text-sm px-3 py-1.5 gap-2',
+    lg: 'text-base px-4 py-2 gap-2.5',
+  };
+
+  const dotSizeClasses = {
+    sm: 'w-1.5 h-1.5',
+    md: 'w-2 h-2',
+    lg: 'w-2.5 h-2.5',
+  };
+
+  const iconSizeClasses = {
+    sm: 'text-xs',
+    md: 'text-sm',
+    lg: 'text-base',
+  };
 
   return (
-    <span className={`badge ${color} ${size === 'sm' ? 'text-[10px] px-2 py-0.5' : ''}`}>
-      <span className={`badge-dot ${dot}`} />
-      {label}
+    <span className={`
+      inline-flex items-center font-medium rounded-full ring-1 ring-inset transition-all duration-200
+      ${colors} ${sizeClasses[size]}
+    `}>
+      {showDot && (
+        <span 
+          className={`${dotColor} ${dotSizeClasses[size]} rounded-full ring-1 ring-white dark:ring-neutral-800 shadow-sm`}
+          aria-hidden="true"
+        />
+      )}
+      {showIcon && icon && (
+        <span className={iconSizeClasses[size]} aria-hidden="true">
+          {icon}
+        </span>
+      )}
+      <span className="font-semibold">
+        {label}
+      </span>
     </span>
   );
 }

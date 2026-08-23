@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const prisma = require('../utils/prisma');
-const { sendPasswordResetEmail } = require('../services/notifications');
+const notifications = require('../services/notifications');
 
 const router = express.Router();
 
@@ -82,8 +82,9 @@ router.post('/forgot-password', async (req, res, next) => {
 
     const user = await prisma.user.findUnique({ where: { email } });
     
-    // Always return success to prevent email enumeration
+    // Always return success to prevent email enumeration, but still log the attempt
     if (!user) {
+      console.log(`[Auth] Password reset requested for non-existent email: ${email}`);
       return res.json({ message: 'If an account with that email exists, a reset link has been sent.' });
     }
 
@@ -91,20 +92,41 @@ router.post('/forgot-password', async (req, res, next) => {
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-    // Store the reset token
-    await prisma.passwordResetToken.create({
-      data: {
-        token,
-        userId: user.id,
-        expiresAt,
-      },
-    });
+    try {
+      // Store the reset token
+      await prisma.passwordResetToken.create({
+        data: {
+          token,
+          userId: user.id,
+          expiresAt,
+        },
+      });
 
-    // Send reset email
-    await sendPasswordResetEmail(user.email, user.name, token);
+      // Send reset email
+      await notifications.sendPasswordResetEmail(user.email, user.name, token);
+      
+      console.log(`[Auth] Password reset email sent successfully to: ${email}`);
+      res.json({ message: 'If an account with that email exists, a reset link has been sent.' });
+      
+    } catch (emailError) {
+      console.error(`[Auth] Failed to send password reset email to ${email}:`, emailError);
+      
+      // Clean up the token if email failed
+      try {
+        await prisma.passwordResetToken.deleteMany({
+          where: { userId: user.id, token }
+        });
+      } catch (cleanupError) {
+        console.error('[Auth] Failed to cleanup token after email failure:', cleanupError);
+      }
+      
+      // For security, we still return success message to prevent email enumeration,
+      // but we log the actual error for debugging
+      res.json({ message: 'If an account with that email exists, a reset link has been sent.' });
+    }
 
-    res.json({ message: 'If an account with that email exists, a reset link has been sent.' });
   } catch (err) {
+    console.error('[Auth] Forgot password error:', err);
     next(err);
   }
 });
@@ -150,6 +172,58 @@ router.post('/reset-password', async (req, res, next) => {
     res.json({ message: 'Password has been successfully updated' });
   } catch (err) {
     next(err);
+  }
+});
+
+// Test email configuration endpoint (for development/debugging)
+router.post('/test-email', async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ error: 'Email address is required' });
+    }
+
+    console.log(`[Auth] Testing email configuration by sending to: ${email}`);
+
+    // Check email configuration
+    const isConfigured = notifications.checkEmailConfig();
+    if (!isConfigured) {
+      return res.status(500).json({ 
+        error: 'Email service is not properly configured',
+        details: 'Check server logs and .env configuration'
+      });
+    }
+
+    // Test email connection
+    const connectionTest = await notifications.testEmailConfiguration();
+    if (!connectionTest) {
+      return res.status(500).json({ 
+        error: 'Email service connection test failed',
+        details: 'Check SMTP credentials and server connectivity'
+      });
+    }
+
+    // Send a test password reset email
+    await notifications.sendPasswordResetEmail(email, 'Test User', 'test-token-' + Date.now());
+    
+    res.json({ 
+      message: 'Test email sent successfully!',
+      details: 'Check the recipient inbox. If using Mailtrap, check your Mailtrap inbox.',
+      configuration: {
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+        isProduction: process.env.SMTP_HOST !== 'smtp.mailtrap.io'
+      }
+    });
+    
+  } catch (error) {
+    console.error('[Auth] Test email failed:', error);
+    res.status(500).json({ 
+      error: 'Failed to send test email',
+      details: error.message
+    });
   }
 });
 

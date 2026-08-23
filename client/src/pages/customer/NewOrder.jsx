@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../../utils/api';
 import PageHeader from '../../components/shared/PageHeader';
 import FormSection from '../../components/shared/FormSection';
+import FormField from '../../components/shared/FormField';
+import Select from '../../components/shared/Select';
 import QuoteCard from '../../components/shared/QuoteCard';
 import Alert from '../../components/shared/Alert';
 
@@ -17,20 +19,95 @@ const INITIAL = {
 
 export default function NewOrder() {
   const navigate = useNavigate();
-  const [form, setForm]       = useState(INITIAL);
-  const [quote, setQuote]     = useState(null);
-  const [error, setError]     = useState('');
+  const [form, setForm] = useState(INITIAL);
+  const [quote, setQuote] = useState(null);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [placing, setPlacing] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  function validateField(name, value) {
+    const errors = { ...fieldErrors };
+    
+    switch (name) {
+      case 'pickupAddress':
+      case 'dropAddress':
+        if (!value.trim()) {
+          errors[name] = 'Address is required';
+        } else if (value.trim().length < 10) {
+          errors[name] = 'Please enter a complete address';
+        } else {
+          delete errors[name];
+        }
+        break;
+      case 'pickupPincode':
+      case 'dropPincode':
+        if (!value) {
+          errors[name] = 'Pincode is required';
+        } else if (!/^[0-9]{5,6}$/.test(value)) {
+          errors[name] = 'Please enter a valid 5-6 digit pincode';
+        } else {
+          delete errors[name];
+        }
+        break;
+      case 'lengthCm':
+      case 'breadthCm':
+      case 'heightCm':
+        if (!value) {
+          errors[name] = 'Dimension is required';
+        } else if (parseFloat(value) <= 0) {
+          errors[name] = 'Must be greater than 0';
+        } else if (parseFloat(value) > 500) {
+          errors[name] = 'Maximum 500cm allowed';
+        } else {
+          delete errors[name];
+        }
+        break;
+      case 'actualWeightKg':
+        if (!value) {
+          errors[name] = 'Weight is required';
+        } else if (parseFloat(value) <= 0) {
+          errors[name] = 'Must be greater than 0';
+        } else if (parseFloat(value) > 100) {
+          errors[name] = 'Maximum 100kg allowed';
+        } else {
+          delete errors[name];
+        }
+        break;
+    }
+    
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
 
   function set(k, v) {
     setForm(f => ({ ...f, [k]: v }));
+    validateField(k, v);
     if (quote) setQuote(null); // clear quote if form changes
+    if (error) setError(''); // clear general error when user starts typing
   }
 
   async function handleQuote(e) {
     e.preventDefault();
-    setError(''); setQuote(null); setLoading(true);
+    setError(''); 
+    setQuote(null);
+    
+    // Validate all required fields
+    const requiredFields = ['pickupAddress', 'pickupPincode', 'dropAddress', 'dropPincode', 'lengthCm', 'breadthCm', 'heightCm', 'actualWeightKg'];
+    let hasErrors = false;
+    
+    requiredFields.forEach(field => {
+      if (!validateField(field, form[field])) {
+        hasErrors = true;
+      }
+    });
+    
+    if (hasErrors) {
+      setError('Please fix the errors above before calculating quote.');
+      return;
+    }
+    
+    setLoading(true);
     try {
       const q = await api.post('/orders/quote', {
         pickupPincode: form.pickupPincode, dropPincode: form.dropPincode,
@@ -42,24 +119,27 @@ export default function NewOrder() {
       setTimeout(() => document.getElementById('quote-section')
         ?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to calculate quote. Please try again.');
     } finally {
       setLoading(false);
     }
   }
 
   async function handleConfirm() {
-    setError(''); setPlacing(true);
+    setError(''); 
+    setPlacing(true);
     try {
       const order = await api.post('/orders', {
         ...form,
-        lengthCm: parseFloat(form.lengthCm), breadthCm: parseFloat(form.breadthCm),
-        heightCm: parseFloat(form.heightCm), actualWeightKg: parseFloat(form.actualWeightKg),
+        lengthCm: parseFloat(form.lengthCm), 
+        breadthCm: parseFloat(form.breadthCm),
+        heightCm: parseFloat(form.heightCm), 
+        actualWeightKg: parseFloat(form.actualWeightKg),
         scheduledDate: form.scheduledDate || undefined,
       });
       navigate(`/customer/orders/${order.id}`);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to place order. Please try again.');
       setPlacing(false);
     }
   }
@@ -84,98 +164,199 @@ export default function NewOrder() {
         ]}
       />
 
-      <form onSubmit={handleQuote} className="space-y-4">
+      <form onSubmit={handleQuote} className="space-y-6">
 
-        {/* ── Step 1: Pickup ───────────────────────────────────────── */}
-        <FormSection title="Pickup Details" icon="📍" step={1}>
-          <div>
-            <label htmlFor="pickupAddress" className="label">
-              Pickup Address <span className="text-red-400">*</span>
-            </label>
+        {/* Step 1: Pickup */}
+        <FormSection 
+          title="Pickup Details" 
+          icon="📍" 
+          step={1}
+          description="Where should we collect your package?"
+        >
+          <FormField
+            id="pickupAddress"
+            label="Pickup Address"
+            required
+            error={fieldErrors.pickupAddress}
+            hint="Enter the complete pickup address with landmarks"
+          >
             <textarea
-              id="pickupAddress" className="input resize-none" rows={2} required
-              placeholder="e.g. 12, MG Road, Koregaon Park, Pune"
-              value={form.pickupAddress} onChange={e => set('pickupAddress', e.target.value)}
+              rows={3}
+              className="resize-none"
+              placeholder="e.g. 12, MG Road, Koregaon Park, Pune - 411001"
+              value={form.pickupAddress} 
+              onChange={e => set('pickupAddress', e.target.value)}
             />
-          </div>
-          <div className="max-w-xs">
-            <label htmlFor="pickupPincode" className="label">
-              Pickup Pincode <span className="text-red-400">*</span>
-            </label>
+          </FormField>
+          
+          <FormField
+            id="pickupPincode"
+            label="Pickup Pincode"
+            required
+            error={fieldErrors.pickupPincode}
+            hint="Must be a serviceable pincode mapped by admin"
+            className="max-w-xs"
+          >
             <input
-              id="pickupPincode" className="input" type="text" inputMode="numeric"
-              pattern="[0-9]{5,6}" required placeholder="e.g. 411001"
-              value={form.pickupPincode} onChange={e => set('pickupPincode', e.target.value)}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]{5,6}"
+              placeholder="e.g. 411001"
+              maxLength={6}
+              value={form.pickupPincode} 
+              onChange={e => set('pickupPincode', e.target.value)}
             />
-            <p className="field-hint">Must be a serviceable pincode mapped by admin.</p>
-          </div>
+          </FormField>
         </FormSection>
 
-        {/* ── Step 2: Drop ─────────────────────────────────────────── */}
-        <FormSection title="Drop / Delivery Details" icon="🏁" step={2}>
-          <div>
-            <label htmlFor="dropAddress" className="label">
-              Drop Address <span className="text-red-400">*</span>
-            </label>
+        {/* Step 2: Drop */}
+        <FormSection 
+          title="Drop / Delivery Details" 
+          icon="🏁" 
+          step={2}
+          description="Where should we deliver your package?"
+        >
+          <FormField
+            id="dropAddress"
+            label="Drop Address"
+            required
+            error={fieldErrors.dropAddress}
+            hint="Enter the complete delivery address with landmarks"
+          >
             <textarea
-              id="dropAddress" className="input resize-none" rows={2} required
-              placeholder="e.g. 45, Baner Road, Baner, Pune"
-              value={form.dropAddress} onChange={e => set('dropAddress', e.target.value)}
+              rows={3}
+              className="resize-none"
+              placeholder="e.g. 45, Baner Road, Baner, Pune - 411045"
+              value={form.dropAddress} 
+              onChange={e => set('dropAddress', e.target.value)}
             />
-          </div>
-          <div className="max-w-xs">
-            <label htmlFor="dropPincode" className="label">
-              Drop Pincode <span className="text-red-400">*</span>
-            </label>
+          </FormField>
+          
+          <FormField
+            id="dropPincode"
+            label="Drop Pincode"
+            required
+            error={fieldErrors.dropPincode}
+            hint="Delivery location pincode"
+            className="max-w-xs"
+          >
             <input
-              id="dropPincode" className="input" type="text" inputMode="numeric"
-              pattern="[0-9]{5,6}" required placeholder="e.g. 411045"
-              value={form.dropPincode} onChange={e => set('dropPincode', e.target.value)}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]{5,6}"
+              placeholder="e.g. 411045"
+              maxLength={6}
+              value={form.dropPincode} 
+              onChange={e => set('dropPincode', e.target.value)}
             />
-          </div>
+          </FormField>
         </FormSection>
 
-        {/* ── Step 3: Dimensions ──────────────────────────────────── */}
-        <FormSection title="Package Dimensions & Weight" icon="📐" step={3}>
-          <p className="text-xs text-gray-400 -mt-1 leading-relaxed">
-            Billing uses <strong>chargeable weight</strong> = max(actual, volumetric).
-            Volumetric weight = (L × B × H) / 5000.
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[
-              { id: 'lengthCm',       label: 'Length (cm)',      ph: 'e.g. 30' },
-              { id: 'breadthCm',      label: 'Breadth (cm)',     ph: 'e.g. 20' },
-              { id: 'heightCm',       label: 'Height (cm)',      ph: 'e.g. 15' },
-              { id: 'actualWeightKg', label: 'Actual Wt (kg)',   ph: 'e.g. 2.5', step: '0.001' },
-            ].map(f => (
-              <div key={f.id}>
-                <label htmlFor={f.id} className="label">{f.label}</label>
-                <input
-                  id={f.id} className="input" type="number" min="0.01"
-                  step={f.step || '0.1'} required placeholder={f.ph}
-                  value={form[f.id]} onChange={e => set(f.id, e.target.value)}
-                />
-              </div>
-            ))}
+        {/* Step 3: Dimensions */}
+        <FormSection 
+          title="Package Dimensions & Weight" 
+          icon="📐" 
+          step={3}
+          description="Billing uses chargeable weight = max(actual, volumetric). Volumetric weight = (L × B × H) / 5000."
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <FormField
+              id="lengthCm"
+              label="Length (cm)"
+              required
+              error={fieldErrors.lengthCm}
+            >
+              <input
+                type="number"
+                min="0.1"
+                step="0.1"
+                placeholder="e.g. 30"
+                value={form.lengthCm} 
+                onChange={e => set('lengthCm', e.target.value)}
+              />
+            </FormField>
+            
+            <FormField
+              id="breadthCm"
+              label="Breadth (cm)"
+              required
+              error={fieldErrors.breadthCm}
+            >
+              <input
+                type="number"
+                min="0.1"
+                step="0.1"
+                placeholder="e.g. 20"
+                value={form.breadthCm} 
+                onChange={e => set('breadthCm', e.target.value)}
+              />
+            </FormField>
+            
+            <FormField
+              id="heightCm"
+              label="Height (cm)"
+              required
+              error={fieldErrors.heightCm}
+            >
+              <input
+                type="number"
+                min="0.1"
+                step="0.1"
+                placeholder="e.g. 15"
+                value={form.heightCm} 
+                onChange={e => set('heightCm', e.target.value)}
+              />
+            </FormField>
+            
+            <FormField
+              id="actualWeightKg"
+              label="Actual Wt (kg)"
+              required
+              error={fieldErrors.actualWeightKg}
+            >
+              <input
+                type="number"
+                min="0.001"
+                step="0.001"
+                placeholder="e.g. 2.5"
+                value={form.actualWeightKg} 
+                onChange={e => set('actualWeightKg', e.target.value)}
+              />
+            </FormField>
           </div>
 
           {/* Live preview pill */}
           {vol != null && (
-            <div className="flex flex-wrap items-center gap-2 mt-1">
-              <div className="flex items-center gap-2 bg-brand-50 border border-brand-200
-                              rounded-xl px-3.5 py-2 text-xs text-brand-700 font-semibold
-                              shadow-card animate-scale-in">
-                <span>💡</span>
-                <span>Volumetric ≈ <strong>{vol.toFixed(3)} kg</strong></span>
+            <div className="mt-4 p-4 bg-info-50 dark:bg-info-900/20 
+                           border border-info-200 dark:border-info-800 rounded-xl">
+              <div className="flex items-center gap-2 text-info-700 dark:text-info-300 text-sm font-medium">
+                <span className="text-base">💡</span>
+                <span>Weight Calculation Preview</span>
+              </div>
+              <div className="mt-2 flex flex-wrap gap-4 text-sm">
+                <div>
+                  <span className="text-text-tertiary dark:text-text-dark-tertiary">Volumetric:</span>
+                  <span className="ml-1 font-semibold text-text-primary dark:text-text-dark-primary">
+                    {vol.toFixed(3)} kg
+                  </span>
+                </div>
                 {chargeable != null && (
                   <>
-                    <span className="text-brand-300">·</span>
-                    <span>Chargeable ≈ <strong>{chargeable.toFixed(3)} kg</strong></span>
-                    {chargeable > parseFloat(form.actualWeightKg) && (
-                      <span className="bg-orange-100 text-orange-700 rounded-lg px-1.5 py-0.5
-                                       ring-1 ring-orange-200 font-bold text-[10px]">
-                        volumetric wins
+                    <div>
+                      <span className="text-text-tertiary dark:text-text-dark-tertiary">Chargeable:</span>
+                      <span className="ml-1 font-semibold text-text-primary dark:text-text-dark-primary">
+                        {chargeable.toFixed(3)} kg
                       </span>
+                    </div>
+                    {chargeable > parseFloat(form.actualWeightKg) && (
+                      <div className="inline-flex items-center gap-1 bg-warning-100 dark:bg-warning-900/30 
+                                     text-warning-700 dark:text-warning-300 rounded-lg px-2 py-1 text-xs font-medium">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        Volumetric weight applies
+                      </div>
                     )}
                   </>
                 )}
@@ -184,60 +365,117 @@ export default function NewOrder() {
           )}
         </FormSection>
 
-        {/* ── Step 4: Options ─────────────────────────────────────── */}
-        <FormSection title="Shipment & Payment Options" icon="💳" step={4}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="orderType" className="label">Order Type</label>
-              <select id="orderType" className="input" value={form.orderType}
-                onChange={e => set('orderType', e.target.value)}>
-                <option value="B2C">B2C — Business to Consumer</option>
-                <option value="B2B">B2B — Business to Business</option>
-              </select>
-              <p className="field-hint">Determines which rate card is applied.</p>
-            </div>
-            <div>
-              <label htmlFor="paymentType" className="label">Payment Type</label>
-              <select id="paymentType" className="input" value={form.paymentType}
-                onChange={e => set('paymentType', e.target.value)}>
-                <option value="Prepaid">Prepaid — pay online</option>
-                <option value="COD">COD — Cash on Delivery</option>
-              </select>
-              <p className="field-hint">COD orders carry an extra surcharge.</p>
-            </div>
+        {/* Step 4: Options */}
+        <FormSection 
+          title="Shipment & Payment Options" 
+          icon="💳" 
+          step={4}
+          description="Choose your preferred shipment and payment settings"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <FormField
+              id="orderType"
+              label="Order Type"
+              hint="Determines which rate card is applied"
+            >
+              <Select 
+                value={form.orderType}
+                onChange={e => set('orderType', e.target.value)}
+                options={[
+                  { value: 'B2C', label: 'B2C — Business to Consumer' },
+                  { value: 'B2B', label: 'B2B — Business to Business' }
+                ]}
+              />
+            </FormField>
+            
+            <FormField
+              id="paymentType"
+              label="Payment Type"
+              hint="COD orders carry an extra surcharge"
+            >
+              <Select 
+                value={form.paymentType}
+                onChange={e => set('paymentType', e.target.value)}
+                options={[
+                  { value: 'Prepaid', label: 'Prepaid — pay online' },
+                  { value: 'COD', label: 'COD — Cash on Delivery' }
+                ]}
+              />
+            </FormField>
           </div>
-          <div className="max-w-xs">
-            <label htmlFor="scheduledDate" className="label">
-              Preferred Pickup Date
-              <span className="ml-1 text-xs font-normal text-gray-400">(optional)</span>
-            </label>
+          
+          <FormField
+            id="scheduledDate"
+            label="Preferred Pickup Date"
+            optional
+            hint="Leave empty for immediate pickup scheduling"
+            className="max-w-sm"
+          >
             <input
-              id="scheduledDate" className="input" type="date"
+              type="date"
               min={new Date().toISOString().split('T')[0]}
-              value={form.scheduledDate} onChange={e => set('scheduledDate', e.target.value)}
+              value={form.scheduledDate} 
+              onChange={e => set('scheduledDate', e.target.value)}
             />
-          </div>
+          </FormField>
         </FormSection>
 
-        {error && <Alert message={error} />}
+        {error && (
+          <Alert 
+            type="error" 
+            message={error} 
+            dismissible
+            onDismiss={() => setError('')}
+          />
+        )}
 
-        <button type="submit" className="btn-primary w-full h-12 text-base btn-lg" disabled={loading}>
+        <button 
+          type="submit" 
+          className="btn-primary w-full h-12 text-base" 
+          disabled={loading || Object.keys(fieldErrors).length > 0}
+        >
           {loading ? (
-            <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Calculating your quote…</>
+            <>
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Calculating your quote…
+            </>
           ) : (
-            <>Calculate Quote <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg></>
+            <>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              Calculate Quote
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </>
           )}
         </button>
       </form>
 
-      {/* ── Quote result ─────────────────────────────────────────── */}
+      {/* Quote result */}
       {quote && (
         <div id="quote-section" className="mt-8 animate-slide-up">
-          <div className="divider-label my-4">
-            Review Your Quote
+          <div className="flex items-center justify-center mb-6">
+            <div className="flex items-center gap-3 px-6 py-3 bg-success-50 dark:bg-success-900/20 
+                           text-success-700 dark:text-success-300 rounded-full border border-success-200 
+                           dark:border-success-800 font-medium">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Review Your Quote
+            </div>
           </div>
           <QuoteCard quote={quote} onConfirm={handleConfirm} loading={placing} />
-          {error && <Alert message={error} className="mt-3" />}
+          {error && (
+            <Alert 
+              type="error" 
+              message={error} 
+              className="mt-4"
+              dismissible
+              onDismiss={() => setError('')}
+            />
+          )}
         </div>
       )}
     </div>
