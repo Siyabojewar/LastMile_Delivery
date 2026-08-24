@@ -260,11 +260,10 @@ export default function Register() {
         </div>
 
         {/* Features Preview */}
-        <div className="mt-6 grid grid-cols-3 gap-3">
+        <div className="mt-6 grid grid-cols-2 gap-3">
           {[
             { icon: '🧾', label: 'Instant quotes', color: 'bg-blue-50 text-blue-700' },
-            { icon: '📍', label: 'Live tracking', color: 'bg-emerald-50 text-emerald-700' },
-            { icon: '🔔', label: 'Email updates', color: 'bg-purple-50 text-purple-700' },
+            { icon: '📍', label: 'Live tracking',  color: 'bg-emerald-50 text-emerald-700' },
           ].map(feature => (
             <div key={feature.label} className={`
               p-3 rounded-xl border text-center transition-all duration-200
@@ -276,6 +275,9 @@ export default function Register() {
             </div>
           ))}
         </div>
+        <p className="mt-4 text-center text-xs text-gray-400">
+          This creates a <strong>Customer</strong> account. Agent &amp; admin accounts are created by administrators only.
+        </p>
       </div>
     </div>
   );
