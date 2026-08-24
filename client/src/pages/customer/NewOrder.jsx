@@ -252,7 +252,7 @@ export default function NewOrder() {
           title="Package Dimensions & Weight" 
           icon="📐" 
           step={3}
-          description="Billing uses chargeable weight = max(actual, volumetric). Volumetric weight = (L × B × H) / 5000."
+          description="We charge based on whichever is greater — your package's actual weight or its size-based weight. Bigger boxes may cost more even if they're light."
         >
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <FormField
