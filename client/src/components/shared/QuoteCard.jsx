@@ -115,7 +115,7 @@ export default function QuoteCard({ quote, onConfirm, loading }) {
           )}
         </button>
         <p className="text-center text-xs text-gray-400 mt-2.5">
-          You won't be charged until your delivery is confirmed
+          This is an estimated quote — no payment is processed through this platform.
         </p>
       </div>
     </div>

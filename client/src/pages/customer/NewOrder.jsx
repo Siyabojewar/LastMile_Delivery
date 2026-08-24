@@ -386,7 +386,7 @@ export default function NewOrder() {
                 value={form.paymentType}
                 onChange={e => set('paymentType', e.target.value)}
                 options={[
-                  { value: 'Prepaid', label: 'Prepaid — pay online' },
+                  { value: 'Prepaid', label: 'Prepaid' },
                   { value: 'COD', label: 'COD — Cash on Delivery' }
                 ]}
               />
