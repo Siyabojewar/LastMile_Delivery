@@ -115,7 +115,7 @@ export default function QuoteCard({ quote, onConfirm, loading }) {
           )}
         </button>
         <p className="text-center text-xs text-gray-400 mt-2.5">
-          This is an estimated quote — no payment is processed through this platform.
+          This is an estimated quote. No payment is collected through this platform — Prepaid orders are settled outside the app, COD is collected by the agent on delivery.
         </p>
       </div>
     </div>
